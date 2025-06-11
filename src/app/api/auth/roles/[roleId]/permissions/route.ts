@@ -6,12 +6,12 @@ const prisma = new PrismaClient();
 // GET all permissions for a specific role
 export async function GET(
   request: Request,
-  { params }: { params: { roleId: string } }
+  context: { params: { roleId: string } }
 ) {
   try {
     const rolePermissions = await prisma.rolePermission.findMany({
       where: {
-        role_id: params.roleId
+        role_id: context.params.roleId
       },
       include: {
         permission: true
@@ -27,7 +27,7 @@ export async function GET(
 // POST assign permission to role
 export async function POST(
   request: Request,
-  { params }: { params: { roleId: string } }
+  context: { params: { roleId: string } }
 ) {
   try {
     const body = await request.json();
@@ -35,7 +35,7 @@ export async function POST(
 
     const rolePermission = await prisma.rolePermission.create({
       data: {
-        role_id: params.roleId,
+        role_id: context.params.roleId,
         permission_id
       },
       include: {

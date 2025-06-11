@@ -6,12 +6,12 @@ const prisma = new PrismaClient();
 // GET all roles for a specific user
 export async function GET(
   request: Request,
-  { params }: { params: { userId: string } }
+  context: { params: { userId: string } }
 ) {
   try {
     const userRoles = await prisma.userRole.findMany({
       where: {
-        user_id: params.userId
+        user_id: context.params.userId
       },
       include: {
         role: true
@@ -27,7 +27,7 @@ export async function GET(
 // POST assign role to user
 export async function POST(
   request: Request,
-  { params }: { params: { userId: string } }
+  context: { params: { userId: string } }
 ) {
   try {
     const body = await request.json();
@@ -35,7 +35,7 @@ export async function POST(
 
     const userRole = await prisma.userRole.create({
       data: {
-        user_id: params.userId,
+        user_id: context.params.userId,
         role_id
       },
       include: {

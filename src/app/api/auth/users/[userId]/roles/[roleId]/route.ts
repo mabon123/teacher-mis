@@ -6,13 +6,13 @@ const prisma = new PrismaClient();
 // DELETE remove role from user
 export async function DELETE(
   request: Request,
-  { params }: { params: { userId: string; roleId: string } }
+  context: { params: { userId: string; roleId: string } }
 ) {
   try {
     await prisma.userRole.deleteMany({
       where: {
-        user_id: params.userId,
-        role_id: params.roleId
+        user_id: context.params.userId,
+        role_id: context.params.roleId
       }
     });
 
