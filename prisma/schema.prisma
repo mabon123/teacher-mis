@@ -1,0 +1,138 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+ provider = "prisma-client-js"
+}
+
+datasource db {
+ provider = "mongodb"
+ url = env("DATABASE_URL")
+}
+
+model User {
+ id String @id @default(auto()) @map("_id") @db.ObjectId
+ username String
+ password String
+ is_active Boolean
+ roles UserRole[]
+ active_logs ActiveLog[]
+ audit_logs AuditLog[]
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+}
+
+model Role {
+ id String @id @default(auto()) @map("_id") @db.ObjectId
+ name_en String
+ name_kh String
+ code String
+ is_active Boolean
+ description String?
+ permission RolePermission[]
+ users UserRole[]
+ created_at DateTime @default(now())
+ updated_at DateTime @updatedAt
+}
+
+model Permission {
+ id String @id @default(auto()) @map("_id") @db.ObjectId
+ name_en String
+ name_kh String
+ code String
+ is_active Boolean
+ description String?
+ role RolePermission[]
+ created_at DateTime @default(now())
+ updated_at DateTime @updatedAt
+}
+
+model RolePermission {
+ id String @id @default(auto()) @map("_id") @db.ObjectId
+ role_id String @db.ObjectId
+ permission_id String @db.ObjectId
+ role Role @relation(fields: [role_id], references: [id])
+ permission Permission @relation(fields: [permission_id], references: [id])
+}
+
+model UserRole {
+ id String @id @default(auto()) @map("_id") @db.ObjectId
+ user_id String @db.ObjectId
+ role_id String @db.ObjectId
+ user User @relation(fields: [user_id], references: [id])
+ role Role @relation(fields: [role_id], references: [id])
+}
+
+model ActiveLog {
+ id String @id @default(auto()) @map("_id") @db.ObjectId
+ session_id String
+ start_at DateTime
+ ended_at DateTime?
+ ip_address String
+ user_id String @db.ObjectId
+ user User @relation(fields: [user_id], references: [id])
+}
+
+model AuditLog{
+ id String @id @default(auto()) @map("_id") @db.ObjectId
+ active String
+ timestamp DateTime
+ user_id String @db.ObjectId
+ user User @relation(fields: [user_id], references: [id])
+}
+
+// location model
+model Province {
+ id String @id @default(auto()) @map("_id") @db.ObjectId
+ name_en String
+ name_kh String
+ code String
+ is_active Boolean
+ description String?
+ created_at DateTime @default(now())
+ updated_at DateTime @updatedAt
+ districts District[]
+}
+
+model District {
+ id String @id @default(auto()) @map("_id") @db.ObjectId
+ name_en String
+ name_kh String
+ code String
+ is_active Boolean
+ description String?
+ created_at DateTime @default(now())
+ updated_at DateTime @updatedAt
+ province_id String @db.ObjectId
+ province Province @relation(fields: [province_id], references: [id])
+ communes Commune[]
+}
+
+model Commune {
+ id String @id @default(auto()) @map("_id") @db.ObjectId
+ name_en String
+ name_kh String
+ code String
+ is_active Boolean
+ description String?
+ created_at DateTime @default(now())
+ updated_at DateTime @updatedAt
+ district_id String @db.ObjectId
+ district District @relation(fields: [district_id], references: [id])
+ villages Village[]
+}
+model Village {
+ id String @id @default(auto()) @map("_id") @db.ObjectId
+ name_en String
+ name_kh String
+ code String
+ is_active Boolean
+ description String?
+ created_at DateTime @default(now())
+ updated_at DateTime @updatedAt
+ commune_id String @db.ObjectId
+ commune Commune @relation(fields: [commune_id], references: [id])
+}
