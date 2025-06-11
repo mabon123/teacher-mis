@@ -1,18 +1,18 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 // DELETE remove permission from role
 export async function DELETE(
-  request: Request,
-  context: { params: { roleId: string; permissionId: string } }
+  request: NextRequest,
+  { params }: { params: { roleId: string; permissionId: string } }
 ) {
   try {
     await prisma.rolePermission.deleteMany({
       where: {
-        role_id: context.params.roleId,
-        permission_id: context.params.permissionId
+        role_id: params.roleId,
+        permission_id: params.permissionId
       }
     });
 

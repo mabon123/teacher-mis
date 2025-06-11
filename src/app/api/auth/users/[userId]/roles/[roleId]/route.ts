@@ -1,18 +1,18 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 // DELETE remove role from user
 export async function DELETE(
-  request: Request,
-  context: { params: { userId: string; roleId: string } }
+  request: NextRequest,
+  { params }: { params: { userId: string; roleId: string } }
 ) {
   try {
     await prisma.userRole.deleteMany({
       where: {
-        user_id: context.params.userId,
-        role_id: context.params.roleId
+        user_id: params.userId,
+        role_id: params.roleId
       }
     });
 
