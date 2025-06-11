@@ -6,11 +6,10 @@ const prisma = new PrismaClient();
 // DELETE remove permission from role
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { roleId: string; permissionId: string } }
+  context: { params: { roleId: string; permissionId: string } }
 ) {
   try {
-    // Params are accessed directly, no 'await' is needed.
-    const { roleId, permissionId } = params;
+    const { roleId, permissionId } = context.params;
     
     await prisma.rolePermission.deleteMany({
       where: {
