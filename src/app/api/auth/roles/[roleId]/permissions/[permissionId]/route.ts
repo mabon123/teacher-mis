@@ -6,11 +6,11 @@ const prisma = new PrismaClient();
 // DELETE remove permission from role
 export async function DELETE(
   request: NextRequest,
-  context: { params: Promise<{ roleId: string; permissionId: string }> }
+  { params }: { params: { roleId: string; permissionId: string } }
 ) {
   try {
-    // Await the params since they're now a Promise in Next.js 15
-    const { roleId, permissionId } = await context.params;
+    // Params are accessed directly, no 'await' is needed.
+    const { roleId, permissionId } = params;
     
     await prisma.rolePermission.deleteMany({
       where: {
@@ -22,6 +22,8 @@ export async function DELETE(
     return NextResponse.json({ message: 'Permission removed from role successfully' });
   } catch (error: unknown) {
     console.error('Error removing permission from role:', error);
-    return NextResponse.json({ error: 'Failed to remove permission from role' }, { status: 500 });
+    // It's good practice to log the actual error for debugging
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    return NextResponse.json({ error: 'Failed to remove permission from role', details: errorMessage }, { status: 500 });
   }
 }
