@@ -13,40 +13,18 @@ datasource db {
  url = env("DATABASE_URL")
 }
 
-// user
 model User {
  id String @id @default(auto()) @map("_id") @db.ObjectId
- username String @unique
+ username String
  password String
  is_active Boolean
-
- //role and permission
  roles UserRole[]
-
- //active tracking
  active_logs ActiveLog[]
  audit_logs AuditLog[]
-
- //location tracking
- createdProvinces Province[] @relation("ProvinceCreator")
- updatedProvinces Province[] @relation("ProvinceUpdater")
- createdDistricts District[] @relation("DistrictCreator")
- updatedDistricts District[] @relation("DistrictUpdater")
- createdCommunes Commune[] @relation("CommuneCreator")
- updatedCommunes Commune[] @relation("CommuneUpdater")
- createdVillages Village[] @relation("VillageCreator")
- updatedVillages Village[] @relation("VillageUpdater")
-
- //timestamp
- created_at DateTime @default(now())
- updated_at DateTime @updatedAt
-
- //staff relation
- staff Staff[] @relation("StaffCreator")
- staff_updated Staff[] @relation("StaffUpdater")
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
 }
 
-// role
 model Role {
  id String @id @default(auto()) @map("_id") @db.ObjectId
  name_en String
@@ -60,7 +38,6 @@ model Role {
  updated_at DateTime @updatedAt
 }
 
-// permission
 model Permission {
  id String @id @default(auto()) @map("_id") @db.ObjectId
  name_en String
@@ -73,7 +50,6 @@ model Permission {
  updated_at DateTime @updatedAt
 }
 
-// role permission
 model RolePermission {
  id String @id @default(auto()) @map("_id") @db.ObjectId
  role_id String @db.ObjectId
@@ -82,7 +58,6 @@ model RolePermission {
  permission Permission @relation(fields: [permission_id], references: [id])
 }
 
-// user role
 model UserRole {
  id String @id @default(auto()) @map("_id") @db.ObjectId
  user_id String @db.ObjectId
@@ -91,26 +66,22 @@ model UserRole {
  role Role @relation(fields: [role_id], references: [id])
 }
 
-// active log
 model ActiveLog {
  id String @id @default(auto()) @map("_id") @db.ObjectId
  session_id String
  start_at DateTime
  ended_at DateTime?
  ip_address String
- location String?
  user_id String @db.ObjectId
  user User @relation(fields: [user_id], references: [id])
 }
 
-// audit log
 model AuditLog{
  id String @id @default(auto()) @map("_id") @db.ObjectId
  active String
  timestamp DateTime
  user_id String @db.ObjectId
  user User @relation(fields: [user_id], references: [id])
- details String?
 }
 
 // location model
@@ -123,10 +94,6 @@ model Province {
  description String?
  created_at DateTime @default(now())
  updated_at DateTime @updatedAt
- created_by String @db.ObjectId
- updated_by String @db.ObjectId
- creator User @relation("ProvinceCreator", fields: [created_by], references: [id])
- updater User @relation("ProvinceUpdater", fields: [updated_by], references: [id])
  districts District[]
 }
 
@@ -141,10 +108,6 @@ model District {
  updated_at DateTime @updatedAt
  province_id String @db.ObjectId
  province Province @relation(fields: [province_id], references: [id])
- created_by String @db.ObjectId
- updated_by String @db.ObjectId
- creator User @relation("DistrictCreator", fields: [created_by], references: [id])
- updater User @relation("DistrictUpdater", fields: [updated_by], references: [id])
  communes Commune[]
 }
 
@@ -159,13 +122,8 @@ model Commune {
  updated_at DateTime @updatedAt
  district_id String @db.ObjectId
  district District @relation(fields: [district_id], references: [id])
- created_by String @db.ObjectId
- updated_by String @db.ObjectId
- creator User @relation("CommuneCreator", fields: [created_by], references: [id])
- updater User @relation("CommuneUpdater", fields: [updated_by], references: [id])
  villages Village[]
 }
-
 model Village {
  id String @id @default(auto()) @map("_id") @db.ObjectId
  name_en String
@@ -177,33 +135,4 @@ model Village {
  updated_at DateTime @updatedAt
  commune_id String @db.ObjectId
  commune Commune @relation(fields: [commune_id], references: [id])
- created_by String @db.ObjectId
- updated_by String @db.ObjectId
- creator User @relation("VillageCreator", fields: [created_by], references: [id])
- updater User @relation("VillageUpdater", fields: [updated_by], references: [id])
-}
-
-//Base staff model to track all staff information
-model Staff {
-
- //staff information
- id String @id @default(auto()) @map("_id") @db.ObjectId
- code String @unique
- first_name String
- last_name String
- email String? @unique
- phone String? @unique
- gender String
- date_of_birth DateTime
- nationality String
-
- //timestamp
- created_at DateTime @default(now())
- updated_at DateTime @updatedAt
-
- //user relation
- created_by String @db.ObjectId
- updated_by String @db.ObjectId
- creator User @relation("StaffCreator", fields: [created_by], references: [id])
- updater User @relation("StaffUpdater", fields: [updated_by], references: [id])
 }
