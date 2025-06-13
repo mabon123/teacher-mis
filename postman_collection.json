@@ -1,0 +1,891 @@
+{
+  "info": {
+    "name": "Teacher Management System API",
+    "description": "API collection for the Teacher Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users"]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"john.doe\",\n  \"password\": \"securepassword\",\n  \"roles\": [\"roleId1\", \"roleId2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users", "{{user_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"john.doe.updated\",\n  \"password\": \"newpassword\",\n  \"roles\": [\"roleId1\", \"roleId3\"],\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users", "{{user_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users", "{{user_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Role Management",
+      "item": [
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles"]
+            }
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Administrator\",\n  \"name_kh\": \"អ្នកគ្រប់គ្រង\",\n  \"code\": \"ADMIN\",\n  \"description\": \"Full system access\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles"]
+            }
+          }
+        },
+        {
+          "name": "Get Role by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles/{{role_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles", "{{role_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Updated Admin\",\n  \"name_kh\": \"អ្នកគ្រប់គ្រងធំ\",\n  \"code\": \"SUPER_ADMIN\",\n  \"description\": \"Updated description\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles/{{role_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles", "{{role_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Role",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles/{{role_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles", "{{role_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Role Permissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles/{{role_id}}/permissions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles", "{{role_id}}", "permissions"]
+            }
+          }
+        },
+        {
+          "name": "Assign Permissions to Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"permissionIds\": [\"permissionId1\", \"permissionId2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles/{{role_id}}/permissions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles", "{{role_id}}", "permissions"]
+            }
+          }
+        },
+        {
+          "name": "Remove Permissions from Role",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"permissionIds\": [\"permissionId1\", \"permissionId2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles/{{role_id}}/permissions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles", "{{role_id}}", "permissions"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Permission Management",
+      "item": [
+        {
+          "name": "Get All Permissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/permissions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "permissions"]
+            }
+          }
+        },
+        {
+          "name": "Create Permission",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"View Users\",\n  \"name_kh\": \"មើលអ្នកប្រើប្រាស់\",\n  \"code\": \"USER_VIEW\",\n  \"description\": \"Permission to view users\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/permissions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "permissions"]
+            }
+          }
+        },
+        {
+          "name": "Get Permission by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/permissions/{{permission_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "permissions", "{{permission_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Permission",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Updated Permission\",\n  \"name_kh\": \"ការអនុញ្ញាតធំ\",\n  \"code\": \"UPDATED_PERM\",\n  \"description\": \"Updated description\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/permissions/{{permission_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "permissions", "{{permission_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Permission",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/permissions/{{permission_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "permissions", "{{permission_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Location Management",
+      "item": [
+        {
+          "name": "Provinces",
+          "item": [
+            {
+              "name": "Get All Provinces",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/provinces",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "provinces"]
+                }
+              }
+            },
+            {
+              "name": "Create Province",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name_en\": \"Phnom Penh\",\n  \"name_kh\": \"ភ្នំពេញ\",\n  \"code\": \"PP\",\n  \"description\": \"Capital city\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/provinces",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "provinces"]
+                }
+              }
+            },
+            {
+              "name": "Update Province",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"{{province_id}}\",\n  \"name_en\": \"Updated Phnom Penh\",\n  \"name_kh\": \"ភ្នំពេញធំ\",\n  \"code\": \"PP_UPDATED\",\n  \"description\": \"Updated capital city\",\n  \"is_active\": true\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/provinces",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "provinces"]
+                }
+              }
+            },
+            {
+              "name": "Delete Province",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/provinces?id={{province_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "provinces"],
+                  "query": [
+                    {
+                      "key": "id",
+                      "value": "{{province_id}}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Districts",
+          "item": [
+            {
+              "name": "Get All Districts",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/districts",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "districts"]
+                }
+              }
+            },
+            {
+              "name": "Create District",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name_en\": \"Chamkar Mon\",\n  \"name_kh\": \"ចំការមន\",\n  \"code\": \"CM\",\n  \"description\": \"District in Phnom Penh\",\n  \"province_id\": \"{{province_id}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/districts",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "districts"]
+                }
+              }
+            },
+            {
+              "name": "Update District",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"{{district_id}}\",\n  \"name_en\": \"Updated Chamkar Mon\",\n  \"name_kh\": \"ចំការមនធំ\",\n  \"code\": \"CM_UPDATED\",\n  \"description\": \"Updated district\",\n  \"is_active\": true,\n  \"province_id\": \"{{province_id}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/districts",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "districts"]
+                }
+              }
+            },
+            {
+              "name": "Delete District",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/districts?id={{district_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "districts"],
+                  "query": [
+                    {
+                      "key": "id",
+                      "value": "{{district_id}}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Communes",
+          "item": [
+            {
+              "name": "Get All Communes",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/communes",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "communes"]
+                }
+              }
+            },
+            {
+              "name": "Create Commune",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name_en\": \"Toul Svay Prey\",\n  \"name_kh\": \"ទួលស្វាយព្រៃ\",\n  \"code\": \"TSP\",\n  \"description\": \"Commune in Chamkar Mon\",\n  \"district_id\": \"{{district_id}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/communes",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "communes"]
+                }
+              }
+            },
+            {
+              "name": "Update Commune",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"{{commune_id}}\",\n  \"name_en\": \"Updated Toul Svay Prey\",\n  \"name_kh\": \"ទួលស្វាយព្រៃធំ\",\n  \"code\": \"TSP_UPDATED\",\n  \"description\": \"Updated commune\",\n  \"is_active\": true,\n  \"district_id\": \"{{district_id}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/communes",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "communes"]
+                }
+              }
+            },
+            {
+              "name": "Delete Commune",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/communes?id={{commune_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "communes"],
+                  "query": [
+                    {
+                      "key": "id",
+                      "value": "{{commune_id}}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Villages",
+          "item": [
+            {
+              "name": "Get All Villages",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/villages",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "villages"]
+                }
+              }
+            },
+            {
+              "name": "Create Village",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name_en\": \"Village 1\",\n  \"name_kh\": \"ភូមិ ១\",\n  \"code\": \"V1\",\n  \"description\": \"Village in Toul Svay Prey\",\n  \"commune_id\": \"{{commune_id}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/villages",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "villages"]
+                }
+              }
+            },
+            {
+              "name": "Update Village",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"{{village_id}}\",\n  \"name_en\": \"Updated Village 1\",\n  \"name_kh\": \"ភូមិ ១ធំ\",\n  \"code\": \"V1_UPDATED\",\n  \"description\": \"Updated village\",\n  \"is_active\": true,\n  \"commune_id\": \"{{commune_id}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/villages",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "villages"]
+                }
+              }
+            },
+            {
+              "name": "Delete Village",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/villages?id={{village_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "villages"],
+                  "query": [
+                    {
+                      "key": "id",
+                      "value": "{{village_id}}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Logs",
+      "item": [
+        {
+          "name": "Get Active Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/active-logs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "active-logs"]
+            }
+          }
+        },
+        {
+          "name": "Get Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/audit-logs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "audit-logs"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "your_jwt_token_here",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "user_id_here",
+      "type": "string"
+    },
+    {
+      "key": "role_id",
+      "value": "role_id_here",
+      "type": "string"
+    },
+    {
+      "key": "permission_id",
+      "value": "permission_id_here",
+      "type": "string"
+    },
+    {
+      "key": "province_id",
+      "value": "province_id_here",
+      "type": "string"
+    },
+    {
+      "key": "district_id",
+      "value": "district_id_here",
+      "type": "string"
+    },
+    {
+      "key": "commune_id",
+      "value": "commune_id_here",
+      "type": "string"
+    },
+    {
+      "key": "village_id",
+      "value": "village_id_here",
+      "type": "string"
+    }
+  ]
+} 

@@ -1,12 +1,19 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { checkPermission } from '@/middleware/checkPermission';
 
 const prisma = new PrismaClient();
 
 // GET all users
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Fetch all users
+    const permissionCheck = await checkPermission(request, 'USER_VIEW');
+    if (!permissionCheck.allowed || !permissionCheck.user) {
+      return permissionCheck.response;
+    }
+
     const users = await prisma.user.findMany({
       include: {
         roles: {
@@ -16,7 +23,36 @@ export async function GET() {
         }
       }
     });
-    return NextResponse.json(users);
+
+    // Transform the data to include only necessary fields and handle null timestamps
+    const transformedUsers = users.map(user => {
+      // Update timestamps if they're null
+      if (!user.created_at || !user.updated_at) {
+        prisma.user.update({
+          where: { id: user.id },
+          data: {
+            created_at: user.created_at || new Date(),
+            updated_at: user.updated_at || new Date()
+          }
+        }).catch(console.error);
+      }
+
+      return {
+        id: user.id,
+        username: user.username,
+        is_active: user.is_active,
+        created_at: user.created_at || new Date(),
+        updated_at: user.updated_at || new Date(),
+        roles: user.roles.map(ur => ({
+          id: ur.role.id,
+          name_en: ur.role.name_en,
+          name_kh: ur.role.name_kh,
+          code: ur.role.code
+        }))
+      };
+    });
+
+    return NextResponse.json(transformedUsers);
   } catch (error: unknown) {
     console.error('Error fetching users:', error);
     return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
@@ -24,8 +60,13 @@ export async function GET() {
 }
 
 // POST create new user
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    const permissionCheck = await checkPermission(request, 'USER_CREATE');
+    if (!permissionCheck.allowed || !permissionCheck.user) {
+      return permissionCheck.response;
+    }
+
     const body = await request.json();
     const { username, password, roles = [] } = body;
 
@@ -64,6 +105,16 @@ export async function POST(request: Request) {
       }
     });
 
+    // Add audit log for user creation
+    await prisma.auditLog.create({
+      data: {
+        active: 'CREATE_USER',
+        timestamp: new Date(),
+        user_id: permissionCheck.user.id,
+        details: `Created user: ${user.username}`
+      }
+    });
+
     return NextResponse.json(user, { status: 201 });
   } catch (error: unknown) {
     console.error('Error creating user:', error);
@@ -72,8 +123,13 @@ export async function POST(request: Request) {
 }
 
 // PUT update user
-export async function PUT(request: Request) {
+export async function PUT(request: NextRequest) {
   try {
+    const permissionCheck = await checkPermission(request, 'USER_UPDATE');
+    if (!permissionCheck.allowed || !permissionCheck.user) {
+      return permissionCheck.response;
+    }
+
     const body = await request.json();
     const { id, username, password, roles = [], is_active } = body;
 
@@ -129,8 +185,14 @@ export async function PUT(request: Request) {
 }
 
 // DELETE user
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
+  
   try {
+    const permissionCheck = await checkPermission(request, 'USER_DELETE');
+    if (!permissionCheck.allowed || !permissionCheck.user) {
+      return permissionCheck.response;
+    }
+    
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 

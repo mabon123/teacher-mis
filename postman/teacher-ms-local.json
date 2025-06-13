@@ -1,0 +1,24 @@
+{
+  "id": "your-environment-id",
+  "name": "Teacher MS Local",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "province_id",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    }
+  ]
+} 
