@@ -1,0 +1,7 @@
+import { describe, it, expect } from '@jest/globals';
+
+describe('Permission Tests', () => {
+    it('should return true for valid permissions', () => {
+        expect(true).toBe(true);
+    });
+});

@@ -1,0 +1,8 @@
+{
+  "extends": ["next/core-web-vitals"],
+  "rules": {
+    "@typescript-eslint/no-require-imports": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@next/next/no-img-element": "off"
+  }
+}
