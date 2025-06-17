@@ -2,6 +2,47 @@
 
 ## Authentication & User Management
 
+### Authentication (`/api/auth/login`)
+| Method | Endpoint | Description | Required Permission |
+|--------|----------|-------------|-------------------|
+| POST | `/api/auth/login` | User login with username and password | None |
+
+**Request Body:**
+```json
+{
+  "username": "string",
+  "password": "string",
+  "location": "string" // Optional: User's location
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "token": "string", // JWT token
+  "user": {
+    "id": "string",
+    "username": "string",
+    "roles": [
+      {
+        "role": {
+          "id": "string",
+          "name_en": "string",
+          "name_kh": "string",
+          "code": "string"
+        }
+      }
+    ]
+  }
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Missing username or password
+- `401 Unauthorized`: Invalid credentials
+- `500 Internal Server Error`: Server error
+
 ### User Routes (`/api/auth/users`)
 | Method | Endpoint | Description | Required Permission |
 |--------|----------|-------------|-------------------|
@@ -10,6 +51,31 @@
 | GET | `/api/auth/users/[id]` | Get single user | USER_VIEW |
 | PUT | `/api/auth/users/[id]` | Update user | USER_UPDATE |
 | DELETE | `/api/auth/users/[id]` | Delete user | USER_DELETE |
+
+**Create User (POST)**
+```json
+{
+  "username": "string",
+  "password": "string",
+  "roles": ["roleId1", "roleId2"] // Optional: Array of role IDs
+}
+```
+
+**Update User (PUT)**
+```json
+{
+  "username": "string",
+  "password": "string", // Optional
+  "roles": ["roleId1", "roleId2"], // Optional
+  "is_active": boolean // Optional
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Missing required fields
+- `403 Forbidden`: Insufficient permissions
+- `404 Not Found`: User not found
+- `500 Internal Server Error`: Server error
 
 ### Role Routes (`/api/auth/roles`)
 | Method | Endpoint | Description | Required Permission |
@@ -20,6 +86,35 @@
 | PUT | `/api/auth/roles/[id]` | Update role | ROLE_UPDATE |
 | DELETE | `/api/auth/roles/[id]` | Delete role | ROLE_DELETE |
 
+**Create Role (POST)**
+```json
+{
+  "name_en": "string",
+  "name_kh": "string",
+  "code": "string",
+  "description": "string", // Optional
+  "is_active": boolean, // Optional, defaults to true
+  "permissions": ["permissionId1", "permissionId2"] // Optional
+}
+```
+
+**Update Role (PUT)**
+```json
+{
+  "name_en": "string",
+  "name_kh": "string",
+  "code": "string",
+  "description": "string", // Optional
+  "is_active": boolean // Optional
+}
+```
+
+**Error Responses:**
+- `400 Bad Request`: Missing required fields or role assigned to users
+- `403 Forbidden`: Insufficient permissions
+- `404 Not Found`: Role not found
+- `500 Internal Server Error`: Server error
+
 ### Permission Routes (`/api/auth/permissions`)
 | Method | Endpoint | Description | Required Permission |
 |--------|----------|-------------|-------------------|
@@ -29,12 +124,177 @@
 | PUT | `/api/auth/permissions/[id]` | Update permission | PERMISSION_UPDATE |
 | DELETE | `/api/auth/permissions/[id]` | Delete permission | PERMISSION_DELETE |
 
+**Create Permission (POST)**
+```json
+{
+  "name_en": "string",
+  "name_kh": "string",
+  "code": "string",
+  "description": "string", // Optional
+  "is_active": boolean // Optional, defaults to true
+}
+```
+
+**Update Permission (PUT)**
+```json
+{
+  "name_en": "string",
+  "name_kh": "string",
+  "code": "string",
+  "description": "string", // Optional
+  "is_active": boolean // Optional
+}
+```
+
 ### Role-Permission Management (`/api/auth/roles/[id]/permissions`)
 | Method | Endpoint | Description | Required Permission |
 |--------|----------|-------------|-------------------|
 | GET | `/api/auth/roles/[id]/permissions` | Get permissions for a role | ROLE_VIEW |
 | POST | `/api/auth/roles/[id]/permissions` | Assign permissions to role | ROLE_UPDATE |
-| DELETE | `/api/auth/roles/[id]/permissions` | Remove permissions from role | ROLE_UPDATE |
+
+**Assign Permissions (POST)**
+```json
+{
+  "permissionIds": ["permissionId1", "permissionId2"]
+}
+```
+
+### Audit Logs (`/api/auth/audit-logs`)
+| Method | Endpoint | Description | Required Permission |
+|--------|----------|-------------|-------------------|
+| GET | `/api/auth/audit-logs` | Get audit logs with filters | LOG_VIEW |
+
+**Query Parameters:**
+- `userId`: Filter by user ID
+- `action`: Filter by action type
+- `entityType`: Filter by entity type
+- `startDate`: Filter by start date
+- `endDate`: Filter by end date
+- `success`: Filter by success status
+
+**Response:**
+```json
+[
+  {
+    "id": "string",
+    "userId": "string",
+    "action": "string",
+    "entityType": "string",
+    "entityId": "string",
+    "details": "string",
+    "success": boolean,
+    "ipAddress": "string",
+    "userAgent": "string",
+    "timestamp": "string"
+  }
+]
+```
+
+### Active Logs (`/api/auth/active-logs`)
+| Method | Endpoint | Description | Required Permission |
+|--------|----------|-------------|-------------------|
+| GET | `/api/auth/active-logs` | Get active user sessions | LOG_VIEW |
+
+**Query Parameters:**
+- `userId`: Filter by user ID
+- `startDate`: Filter by start date
+- `endDate`: Filter by end date
+
+**Response:**
+```json
+[
+  {
+    "id": "string",
+    "userId": "string",
+    "startAt": "string",
+    "endAt": "string",
+    "ipAddress": "string",
+    "userAgent": "string",
+    "user": {
+      "id": "string",
+      "username": "string"
+    }
+  }
+]
+```
+
+### Location Logs (`/api/auth/location-logs`)
+| Method | Endpoint | Description | Required Permission |
+|--------|----------|-------------|-------------------|
+| GET | `/api/auth/location-logs` | Get location access logs | location.logs.view |
+
+**Query Parameters:**
+- `userId`: Filter by user ID
+- `locationType`: Filter by location type
+- `startDate`: Filter by start date
+- `endDate`: Filter by end date
+
+**Response:**
+```json
+[
+  {
+    "id": "string",
+    "userId": "string",
+    "locationType": "string",
+    "locationId": "string",
+    "action": "string",
+    "timestamp": "string",
+    "ipAddress": "string",
+    "userAgent": "string"
+  }
+]
+```
+
+## Common Response Formats
+
+### Success Response
+```json
+{
+  "data": object | array,
+  "message": "string" // Optional
+}
+```
+
+### Error Response
+```json
+{
+  "error": "string",
+  "details": object // Optional
+}
+```
+
+## Authentication
+
+All endpoints (except login) require a valid JWT token in the Authorization header:
+```
+Authorization: Bearer <token>
+```
+
+## Rate Limiting
+
+- Login attempts are limited to 5 requests per 15 minutes per IP
+- Other endpoints are limited to 100 requests per minute per IP
+
+## Error Codes
+
+- `400 Bad Request`: Invalid input data
+- `401 Unauthorized`: Missing or invalid authentication
+- `403 Forbidden`: Insufficient permissions
+- `404 Not Found`: Resource not found
+- `500 Internal Server Error`: Server error
+
+## Best Practices
+
+1. Always include the Authorization header for authenticated requests
+2. Handle rate limiting by implementing exponential backoff
+3. Implement proper error handling for all API responses
+4. Use appropriate HTTP methods for each operation
+5. Validate all input data before processing
+6. Keep sensitive data out of URLs (use POST body instead)
+7. Implement proper logging for debugging and auditing
+8. Use transactions for operations that modify multiple resources
+9. Implement proper input sanitization
+10. Follow RESTful conventions for endpoint naming and structure
 
 ## Location Management
 
@@ -69,19 +329,6 @@
 | POST | `/api/locations/villages` | Create new village | LOCATION_CREATE |
 | PUT | `/api/locations/villages` | Update village | LOCATION_UPDATE |
 | DELETE | `/api/locations/villages` | Delete village | LOCATION_DELETE |
-
-## Logs
-
-### Active Logs (`/api/auth/active-logs`)
-| Method | Endpoint | Description | Required Permission |
-|--------|----------|-------------|-------------------|
-| GET | `/api/auth/active-logs` | Get active logs | LOG_VIEW |
-| PUT | `/api/auth/active-logs` | Update active logs | LOG_UPDATE |
-
-### Audit Logs (`/api/auth/audit-logs`)
-| Method | Endpoint | Description | Required Permission |
-|--------|----------|-------------|-------------------|
-| GET | `/api/auth/audit-logs` | Get audit logs | LOG_VIEW |
 
 ## Request/Response Examples
 
@@ -231,4 +478,62 @@ All create, update, and delete operations are logged in the audit log with:
 - Action type
 - Timestamp
 - User ID
-- Details of the operation 
+- Details of the operation
+
+# API Route Map
+
+## Level Types
+
+### Get all level types
+- **Method:** GET
+- **URL:** `/api/levels`
+- **Description:** Retrieve all active level types.
+
+### Create a new level type
+- **Method:** POST
+- **URL:** `/api/levels`
+- **Description:** Create a new level type.
+- **Sample Body:**
+```json
+{
+  "name_en": "Test Level",
+  "name_kh": "ថ្នាក់សាកល្បង",
+  "code": "TEST",
+  "level_order": 5,
+  "can_manage": ["SCHOOL"],
+  "can_manage_levels_ids": [],
+  "created_by": "system",
+  "updated_by": "system"
+}
+```
+
+---
+
+## Locations (Provinces)
+
+### Create a new province (location)
+- **Method:** POST
+- **URL:** `/api/locations`
+- **Description:** Create a new province/location. Requires admin authentication.
+- **Headers:**
+  - `Authorization: Bearer <your_token>` (if required)
+- **Sample Body:**
+```json
+{
+  "name_en": "Test Province",
+  "name_kh": "ខេត្តសាកល្បង",
+  "code": "TP01",
+  "description": "A test province"
+}
+```
+
+---
+
+## Notes
+- Start your server with `npm run dev` or `yarn dev`.
+- Use Postman or similar tools to test these endpoints.
+- Add authentication headers if required by your middleware.
+
+---
+
+_If you add more endpoints, update this file accordingly!_ 

@@ -29,6 +29,18 @@ export const PERMISSIONS = {
   // Activity Logs
   LOG_VIEW: 'LOG_VIEW',
   LOG_UPDATE: 'LOG_UPDATE',
+  
+  // Staff Management
+  STAFF_VIEW: 'STAFF_VIEW',
+  STAFF_CREATE: 'STAFF_CREATE',
+  STAFF_UPDATE: 'STAFF_UPDATE',
+  STAFF_DELETE: 'STAFF_DELETE',
+  
+  // Level Management
+  LEVEL_VIEW: 'LEVEL_VIEW',
+  LEVEL_CREATE: 'LEVEL_CREATE',
+  LEVEL_UPDATE: 'LEVEL_UPDATE',
+  LEVEL_DELETE: 'LEVEL_DELETE',
 } as const;
 
 // Define route to permission mapping
@@ -49,6 +61,18 @@ const routePermissions: Record<string, {
   '/api/auth/permissions': {
     GET: PERMISSIONS.PERMISSION_VIEW,
     POST: PERMISSIONS.PERMISSION_CREATE,
+    PUT: PERMISSIONS.PERMISSION_UPDATE,
+    DELETE: PERMISSIONS.PERMISSION_DELETE
+  },
+  '/api/auth/permissions/[id]': {
+    GET: PERMISSIONS.PERMISSION_VIEW,
+    PUT: PERMISSIONS.PERMISSION_UPDATE,
+    DELETE: PERMISSIONS.PERMISSION_DELETE
+  },
+  '/api/auth/roles/[id]/permissions': {
+    GET: PERMISSIONS.ROLE_VIEW,
+    POST: PERMISSIONS.ROLE_UPDATE,
+    DELETE: PERMISSIONS.ROLE_UPDATE
   },
   '/api/locations/provinces': {
     GET: PERMISSIONS.LOCATION_VIEW,
@@ -81,6 +105,24 @@ const routePermissions: Record<string, {
   '/api/auth/audit-logs': {
     GET: PERMISSIONS.LOG_VIEW,
   },
+  '/api/staff': {
+    GET: PERMISSIONS.STAFF_VIEW,
+    POST: PERMISSIONS.STAFF_CREATE,
+    PUT: PERMISSIONS.STAFF_UPDATE,
+    DELETE: PERMISSIONS.STAFF_DELETE,
+  },
+  '/api/levels/types': {
+    GET: PERMISSIONS.LEVEL_VIEW,
+    POST: PERMISSIONS.LEVEL_CREATE,
+    PUT: PERMISSIONS.LEVEL_UPDATE,
+    DELETE: PERMISSIONS.LEVEL_DELETE
+  },
+  '/api/locations/organizations': {
+    GET: 'ORGANIZATION_VIEW',
+    POST: 'ORGANIZATION_CREATE',
+    PUT: 'ORGANIZATION_UPDATE',
+    DELETE: 'ORGANIZATION_DELETE'
+  }
 };
 
 // Helper function to get required permission for a route

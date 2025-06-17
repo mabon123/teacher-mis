@@ -12,8 +12,19 @@ export async function GET(request: NextRequest) {
       return permissionCheck.response;
     }
 
+    const { searchParams } = new URL(request.url);
+    const provinceId = searchParams.get('provinceId');
+
+    const where: { is_active: boolean; province_id?: string } = {
+      is_active: true
+    };
+
+    if (provinceId) {
+      where.province_id = provinceId;
+    }
+
     const districts = await prisma.district.findMany({
-      where: { is_active: true },
+      where,
       include: {
         province: {
           select: {
