@@ -1,8 +1,6 @@
-import { NextResponse, NextRequest } from 'next/server';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
+import { getAuditLogs, ActionType } from '@/services/auditService';
 import { checkPermission } from '@/middleware/checkPermission';
-
-const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,38 +10,23 @@ export async function GET(request: NextRequest) {
       return permissionCheck.response;
     }
 
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
+    // Get query parameters
+    const searchParams = request.nextUrl.searchParams;
+    const userId = searchParams.get('userId') || undefined;
+    const action = searchParams.get('action') as ActionType | undefined;
+    const entityType = searchParams.get('entityType') || undefined;
     const startDate = searchParams.get('startDate') ? new Date(searchParams.get('startDate')!) : undefined;
     const endDate = searchParams.get('endDate') ? new Date(searchParams.get('endDate')!) : undefined;
+    const success = searchParams.get('success') ? searchParams.get('success') === 'true' : undefined;
 
-    const where: Prisma.AuditLogWhereInput = {};
-    if (userId) {
-      where.user_id = userId;
-    }
-    if (startDate || endDate) {
-      where.timestamp = {};
-      if (startDate) {
-        where.timestamp.gte = startDate;
-      }
-      if (endDate) {
-        where.timestamp.lte = endDate;
-      }
-    }
-
-    const logs = await prisma.auditLog.findMany({
-      where,
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true
-          }
-        }
-      },
-      orderBy: {
-        timestamp: 'desc'
-      }
+    // Get audit logs with filters
+    const logs = await getAuditLogs({
+      userId,
+      action,
+      entityType,
+      startDate,
+      endDate,
+      success
     });
 
     return NextResponse.json(logs);

@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { verifyToken } from '@/middleware/auth';
 
-const prisma = new PrismaClient();
+
+const prismaClient = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   try {
@@ -44,7 +45,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create location
-    const location = await prisma.province.create({
+    const location = await prismaClient.province.create({
       data: {
         name_en,
         name_kh,
@@ -57,7 +58,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Create audit log
-    await prisma.auditLog.create({
+    await prismaClient.auditLog.create({
       data: {
         active: 'CREATE_LOCATION',
         timestamp: new Date(),
