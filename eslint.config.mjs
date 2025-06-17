@@ -1,12 +1,8 @@
-const nextConfig = {
-  experimental: {
-    serverActions: {
-      bodySizeLimit: '2mb'
-    }
-  },
-  eslint: {
-    ignoreDuringBuilds: true // Add this to prevent ESLint errors from failing the build
+{
+  "extends": ["next/core-web-vitals"],
+  "rules": {
+    "@next/next/no-img-element": "off",
+    "@typescript-eslint/no-require-imports": "off",
+    "@typescript-eslint/no-var-requires": "off"
   }
-};
-
-export default nextConfig;
+}
