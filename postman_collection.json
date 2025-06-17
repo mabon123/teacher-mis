@@ -1,0 +1,969 @@
+{
+  "info": {
+    "name": "Teacher Management System API",
+    "description": "API collection for testing the Teacher Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"system_admin\",\n    \"password\": \"admin123\",\n    \"location\": \"PROVINCE\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users"]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"test_user\",\n    \"password\": \"password123\",\n    \"roles\": []\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{user_id}}\",\n    \"username\": \"updated_user\",\n    \"is_active\": true,\n    \"roles\": []\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users", "{{user_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Role Management",
+      "item": [
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles"]
+            }
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name_en\": \"Test Role\",\n    \"name_kh\": \"តួនាទីសាកល្បង\",\n    \"code\": \"TEST_ROLE\",\n    \"is_active\": true,\n    \"description\": \"Test role for API testing\",\n    \"permissions\": []\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles"]
+            }
+          }
+        },
+        {
+          "name": "Get Role by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles/{{role_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles", "{{role_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name_en\": \"Updated Role\",\n    \"name_kh\": \"តួនាទីធ្វើបច្ចុប្បន្នភាព\",\n    \"code\": \"UPDATED_ROLE\",\n    \"is_active\": true,\n    \"description\": \"Updated role for API testing\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles/{{role_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles", "{{role_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Role",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles/{{role_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles", "{{role_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Role Permissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles/{{role_id}}/permissions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles", "{{role_id}}", "permissions"]
+            }
+          }
+        },
+        {
+          "name": "Assign Permissions to Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"permissionIds\": []\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles/{{role_id}}/permissions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles", "{{role_id}}", "permissions"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Permission Management",
+      "item": [
+        {
+          "name": "Get All Permissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/permissions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "permissions"]
+            }
+          }
+        },
+        {
+          "name": "Get Permission by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/permissions/{{permission_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "permissions", "{{permission_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Location Management",
+      "item": [
+        {
+          "name": "Provinces",
+          "item": [
+            {
+              "name": "Get All Provinces",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/provinces",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "provinces"]
+                }
+              }
+            },
+            {
+              "name": "Create Province",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name_en\": \"Test Province\",\n    \"name_kh\": \"ខេត្តសាកល្បង\",\n    \"code\": \"TP\",\n    \"description\": \"Test province for API testing\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/provinces",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "provinces"]
+                }
+              }
+            },
+            {
+              "name": "Update Province",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"id\": \"{{province_id}}\",\n    \"name_en\": \"Updated Province\",\n    \"name_kh\": \"ខេត្តធ្វើបច្ចុប្បន្នភាព\",\n    \"code\": \"UP\",\n    \"description\": \"Updated province for API testing\",\n    \"is_active\": true\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/provinces",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "provinces"]
+                }
+              }
+            },
+            {
+              "name": "Delete Province",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/provinces?id={{province_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "provinces"],
+                  "query": [
+                    {
+                      "key": "id",
+                      "value": "{{province_id}}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Districts",
+          "item": [
+            {
+              "name": "Get All Districts",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/districts",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "districts"]
+                }
+              }
+            },
+            {
+              "name": "Create District",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name_en\": \"Test District\",\n    \"name_kh\": \"ស្រុកសាកល្បង\",\n    \"code\": \"TD\",\n    \"description\": \"Test district for API testing\",\n    \"province_id\": \"{{province_id}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/districts",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "districts"]
+                }
+              }
+            },
+            {
+              "name": "Update District",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"id\": \"{{district_id}}\",\n    \"name_en\": \"Updated District\",\n    \"name_kh\": \"ស្រុកធ្វើបច្ចុប្បន្នភាព\",\n    \"code\": \"UD\",\n    \"description\": \"Updated district for API testing\",\n    \"is_active\": true,\n    \"province_id\": \"{{province_id}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/districts",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "districts"]
+                }
+              }
+            },
+            {
+              "name": "Delete District",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/districts?id={{district_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "districts"],
+                  "query": [
+                    {
+                      "key": "id",
+                      "value": "{{district_id}}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Communes",
+          "item": [
+            {
+              "name": "Get All Communes",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/communes",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "communes"]
+                }
+              }
+            },
+            {
+              "name": "Create Commune",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name_en\": \"Test Commune\",\n    \"name_kh\": \"ឃុំសាកល្បង\",\n    \"code\": \"TC\",\n    \"description\": \"Test commune for API testing\",\n    \"district_id\": \"{{district_id}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/communes",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "communes"]
+                }
+              }
+            },
+            {
+              "name": "Update Commune",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"id\": \"{{commune_id}}\",\n    \"name_en\": \"Updated Commune\",\n    \"name_kh\": \"ឃុំធ្វើបច្ចុប្បន្នភាព\",\n    \"code\": \"UC\",\n    \"description\": \"Updated commune for API testing\",\n    \"is_active\": true,\n    \"district_id\": \"{{district_id}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/communes",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "communes"]
+                }
+              }
+            },
+            {
+              "name": "Delete Commune",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/communes?id={{commune_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "communes"],
+                  "query": [
+                    {
+                      "key": "id",
+                      "value": "{{commune_id}}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Villages",
+          "item": [
+            {
+              "name": "Get All Villages",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/villages",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "villages"]
+                }
+              }
+            },
+            {
+              "name": "Create Village",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name_en\": \"Test Village\",\n    \"name_kh\": \"ភូមិសាកល្បង\",\n    \"code\": \"TV\",\n    \"description\": \"Test village for API testing\",\n    \"commune_id\": \"{{commune_id}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/villages",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "villages"]
+                }
+              }
+            },
+            {
+              "name": "Update Village",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"id\": \"{{village_id}}\",\n    \"name_en\": \"Updated Village\",\n    \"name_kh\": \"ភូមិធ្វើបច្ចុប្បន្នភាព\",\n    \"code\": \"UV\",\n    \"description\": \"Updated village for API testing\",\n    \"is_active\": true,\n    \"commune_id\": \"{{commune_id}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/villages",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "villages"]
+                }
+              }
+            },
+            {
+              "name": "Delete Village",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/villages?id={{village_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "villages"],
+                  "query": [
+                    {
+                      "key": "id",
+                      "value": "{{village_id}}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Organizations",
+          "item": [
+            {
+              "name": "Get All Organizations",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/organizations",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "organizations"]
+                }
+              }
+            },
+            {
+              "name": "Create Organization",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name_en\": \"Test Organization\",\n    \"name_kh\": \"ស្ថាប័នសាកល្បង\",\n    \"code\": \"TO\",\n    \"description\": \"Test organization for API testing\",\n    \"type\": \"SCHOOL\",\n    \"province_id\": \"{{province_id}}\",\n    \"district_id\": \"{{district_id}}\",\n    \"commune_id\": \"{{commune_id}}\",\n    \"village_id\": \"{{village_id}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/organizations",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "organizations"]
+                }
+              }
+            },
+            {
+              "name": "Update Organization",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"id\": \"{{organization_id}}\",\n    \"name_en\": \"Updated Organization\",\n    \"name_kh\": \"ស្ថាប័នធ្វើបច្ចុប្បន្នភាព\",\n    \"code\": \"UO\",\n    \"description\": \"Updated organization for API testing\",\n    \"type\": \"SCHOOL\",\n    \"is_active\": true,\n    \"province_id\": \"{{province_id}}\",\n    \"district_id\": \"{{district_id}}\",\n    \"commune_id\": \"{{commune_id}}\",\n    \"village_id\": \"{{village_id}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/locations/organizations",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "organizations"]
+                }
+              }
+            },
+            {
+              "name": "Delete Organization",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/locations/organizations?id={{organization_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "locations", "organizations"],
+                  "query": [
+                    {
+                      "key": "id",
+                      "value": "{{organization_id}}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Level Management",
+      "item": [
+        {
+          "name": "Get All Levels",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/levels",
+              "host": ["{{base_url}}"],
+              "path": ["api", "levels"]
+            }
+          }
+        },
+        {
+          "name": "Create Level",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name_en\": \"Test Level\",\n    \"name_kh\": \"កម្រិតសាកល្បង\",\n    \"code\": \"TEST_LEVEL\",\n    \"level_order\": 1,\n    \"can_manage\": [\"PROVINCE\", \"DISTRICT\"],\n    \"can_manage_levels_ids\": []\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/levels",
+              "host": ["{{base_url}}"],
+              "path": ["api", "levels"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Logging",
+      "item": [
+        {
+          "name": "Get Active Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/active-logs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "active-logs"]
+            }
+          }
+        },
+        {
+          "name": "Get Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/audit-logs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "audit-logs"]
+            }
+          }
+        },
+        {
+          "name": "Get Location Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/location-logs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "location-logs"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Test",
+      "item": [
+        {
+          "name": "Test API",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/test",
+              "host": ["{{base_url}}"],
+              "path": ["api", "test"]
+            }
+          }
+        },
+        {
+          "name": "Test Permissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/test-permissions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "test-permissions"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "token",
+      "value": "your_jwt_token_here"
+    },
+    {
+      "key": "user_id",
+      "value": "user_id_here"
+    },
+    {
+      "key": "role_id",
+      "value": "role_id_here"
+    },
+    {
+      "key": "permission_id",
+      "value": "permission_id_here"
+    },
+    {
+      "key": "province_id",
+      "value": "province_id_here"
+    },
+    {
+      "key": "district_id",
+      "value": "district_id_here"
+    },
+    {
+      "key": "commune_id",
+      "value": "commune_id_here"
+    },
+    {
+      "key": "village_id",
+      "value": "village_id_here"
+    },
+    {
+      "key": "organization_id",
+      "value": "organization_id_here"
+    }
+  ]
+} 

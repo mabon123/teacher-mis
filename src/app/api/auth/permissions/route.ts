@@ -1,12 +1,25 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { checkPermission } from '@/middleware/checkPermission';
 
 const prisma = new PrismaClient();
 
 // GET all permissions
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const permissions = await prisma.permission.findMany();
+    const permissionCheck = await checkPermission(request, 'PERMISSION_VIEW');
+    if (!permissionCheck.allowed || !permissionCheck.user) {
+      return permissionCheck.response;
+    }
+    const permissions = await prisma.permission.findMany({
+      include: {
+        role: {
+          include: {
+            role: true
+          }
+        }
+      }
+    });
     return NextResponse.json(permissions);
   } catch (error: unknown) {
     console.error('Error fetching permissions:', error);
@@ -15,18 +28,31 @@ export async function GET() {
 }
 
 // POST create new permission
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+
+    const permissionCheck = await checkPermission(request, 'PERMISSION_CREATE');
+    if (!permissionCheck.allowed || !permissionCheck.user) {
+      return permissionCheck.response;
+    }
+
     const body = await request.json();
-    const { name_en, name_kh, code, description } = body;
+    const { name_en, name_kh, code, is_active, description } = body;
+
+    if (!name_en || !name_kh || !code) {
+      return NextResponse.json(
+        { error: 'Name (EN/KH) and code are required' },
+        { status: 400 }
+      );
+    }
 
     const permission = await prisma.permission.create({
       data: {
         name_en,
         name_kh,
         code,
-        description,
-        is_active: true
+        is_active: is_active ?? true,
+        description
       }
     });
 
@@ -38,8 +64,13 @@ export async function POST(request: Request) {
 }
 
 // PUT update permission
-export async function PUT(request: Request) {
+export async function PUT(request: NextRequest) {
   try {
+    const permissionCheck = await checkPermission(request, 'PERMISSION_UPDATE');
+    if (!permissionCheck.allowed || !permissionCheck.user) {
+      return permissionCheck.response;
+    }
+
     const body = await request.json();
     const { id, name_en, name_kh, code, description, is_active } = body;
 
@@ -62,8 +93,13 @@ export async function PUT(request: Request) {
 }
 
 // DELETE permission
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
   try {
+    const permissionCheck = await checkPermission(request, 'PERMISSION_DELETE');
+    if (!permissionCheck.allowed || !permissionCheck.user) {
+      return permissionCheck.response;
+    }
+    
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 

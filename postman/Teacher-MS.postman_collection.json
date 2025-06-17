@@ -1,0 +1,236 @@
+{
+  "info": {
+    "name": "Teacher-MS",
+    "description": "Teacher Management System API Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"your_password\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login to get JWT token"
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users"]
+            },
+            "description": "Get all users (requires USER_VIEW permission)"
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"newuser\",\n    \"password\": \"password123\",\n    \"email\": \"user@example.com\",\n    \"roles\": [\"role_id_1\", \"role_id_2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users"]
+            },
+            "description": "Create new user (requires USER_CREATE permission)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Role Management",
+      "item": [
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles"]
+            },
+            "description": "Get all roles (requires ROLE_VIEW permission)"
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name_en\": \"New Role\",\n    \"name_kh\": \"តួនាទីថ្មី\",\n    \"code\": \"NEW_ROLE\",\n    \"permissions\": [\"permission_id_1\", \"permission_id_2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles"]
+            },
+            "description": "Create new role (requires ROLE_CREATE permission)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Location Management",
+      "item": [
+        {
+          "name": "Get All Provinces",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/locations/provinces",
+              "host": ["{{base_url}}"],
+              "path": ["api", "locations", "provinces"]
+            },
+            "description": "Get all provinces (requires LOCATION_VIEW permission)"
+          }
+        },
+        {
+          "name": "Create Province",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name_en\": \"Phnom Penh\",\n    \"name_kh\": \"ភ្នំពេញ\",\n    \"code\": \"PP\",\n    \"description\": \"Capital city\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/locations/provinces",
+              "host": ["{{base_url}}"],
+              "path": ["api", "locations", "provinces"]
+            },
+            "description": "Create new province (requires LOCATION_CREATE permission)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Activity Logs",
+      "item": [
+        {
+          "name": "Get Active Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/active-logs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "active-logs"]
+            },
+            "description": "Get all active sessions (requires LOG_VIEW permission)"
+          }
+        },
+        {
+          "name": "Get Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/audit-logs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "audit-logs"]
+            },
+            "description": "Get all audit logs (requires LOG_VIEW permission)"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "your_jwt_token_here",
+      "type": "string"
+    }
+  ]
+} 

@@ -1,0 +1,1497 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "Teacher MS",
+    "description": "API collection for Teacher Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin123\",\n    \"location\": \"Phnom Penh\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "User login to get a JWT token"
+          },
+          "response": [
+            {
+              "name": "Login Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin123\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "auth", "login"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"user\": {\n        \"id\": \"60c72b2f9b1e8e001c8e8e8e\",\n        \"username\": \"admin\"\n    }\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Login successful\", function () {\n    var jsonData = pm.response.json();\n    pm.expect(jsonData.success).to.be.true;\n    pm.expect(jsonData).to.have.property('token');\n    pm.environment.set(\"token\", jsonData.token);\n    pm.environment.set(\"userId\", jsonData.user.id);\n});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/audit-logs?userId={{userId}}&action=USER_LOGIN&startDate=2023-01-01T00:00:00Z&endDate=2024-12-31T23:59:59Z",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "audit-logs"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "action",
+                  "value": "USER_LOGIN"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2023-01-01T00:00:00Z"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31T23:59:59Z"
+                }
+              ]
+            },
+            "description": "Get audit logs (requires LOG_VIEW permission)"
+          }
+        },
+        {
+          "name": "Get Location Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/location-logs?userId={{userId}}&locationType=PROVINCE&startDate=2023-01-01T00:00:00Z&endDate=2024-12-31T23:59:59Z",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "location-logs"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "locationType",
+                  "value": "PROVINCE"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2023-01-01T00:00:00Z"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31T23:59:59Z"
+                }
+              ]
+            },
+            "description": "Get location-specific logs (requires location.logs.view permission)"
+          }
+        },
+        {
+          "name": "Get Active Sessions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/active-logs?userId={{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "active-logs"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
+            },
+            "description": "Get active sessions (requires LOG_VIEW permission)"
+          }
+        },
+        {
+          "name": "Update Active Session (End Session)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"sessionId\": \"<SESSION_ID>\",\n    \"endedAt\": \"<ISO_DATE_STRING>\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/active-logs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "active-logs"]
+            },
+            "description": "Update an active session to end it (requires LOG_UPDATE permission)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "users"]
+            },
+            "description": "Get all users with their roles (requires USER_VIEW permission)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"password123\",\n    \"is_active\": true,\n    \"roleIds\": [\"<ROLE_ID>\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "users"]
+            },
+            "description": "Create new user (requires USER_CREATE permission)"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();\npm.environment.set(\"newUserId\", jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{newUserId}}\",\n    \"username\": \"updateduser\",\n    \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "users"]
+            },
+            "description": "Update user (requires USER_UPDATE permission)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/users?id={{newUserId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "users"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{newUserId}}"
+                }
+              ]
+            },
+            "description": "Delete user (requires USER_DELETE permission)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Role Management",
+      "item": [
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "roles"]
+            },
+            "description": "Get all roles with permissions and users (requires ROLE_VIEW permission)"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name_en\": \"Test Role\",\n    \"name_kh\": \"តួនាទីសាកល្បង\",\n    \"code\": \"TEST_ROLE\",\n    \"is_active\": true,\n    \"description\": \"A test role\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "roles"]
+            },
+            "description": "Create new role (requires ROLE_CREATE permission)"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();\npm.environment.set(\"roleId\", jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{roleId}}\",\n    \"name_en\": \"Updated Role\",\n    \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "roles"]
+            },
+            "description": "Update role (requires ROLE_UPDATE permission)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Role",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/roles?id={{roleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "roles"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{roleId}}"
+                }
+              ]
+            },
+            "description": "Delete role (requires ROLE_DELETE permission)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Permission Management",
+      "item": [
+        {
+          "name": "Get All Permissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "permissions"]
+            },
+            "description": "Get all permissions (requires PERMISSION_VIEW permission)"
+          }
+        },
+        {
+          "name": "Get Permission by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/permissions/{{permissionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "permissions", "{{permissionId}}"]
+            },
+            "description": "Get a single permission by ID (requires PERMISSION_VIEW permission)"
+          }
+        },
+        {
+          "name": "Create Permission",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name_en\": \"Test Permission\",\n    \"name_kh\": \"ការអនុញ្ញាតសាកល្បង\",\n    \"code\": \"TEST_PERMISSION\",\n    \"description\": \"A test permission\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "permissions"]
+            },
+            "description": "Create a new permission (requires PERMISSION_CREATE permission)"
+          }
+        },
+        {
+          "name": "Update Permission",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{permissionId}}\",\n    \"name_en\": \"Updated Permission\",\n    \"name_kh\": \"ការអនុញ្ញាតធ្វើបច្ចុប្បន្នភាព\",\n    \"code\": \"UPDATED_PERMISSION\",\n    \"description\": \"An updated permission\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/permissions/{{permissionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "permissions", "{{permissionId}}"]
+            },
+            "description": "Update an existing permission (requires PERMISSION_UPDATE permission)"
+          }
+        },
+        {
+          "name": "Delete Permission",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/permissions?id={{permissionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "permissions"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{permissionId}}"
+                }
+              ]
+            },
+            "description": "Delete a permission (requires PERMISSION_DELETE permission)"
+          }
+        },
+        {
+          "name": "Get Role Permissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/roles/{{roleId}}/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "roles", "{{roleId}}", "permissions"]
+            },
+            "description": "Get all permissions for a role (requires ROLE_VIEW permission)"
+          }
+        },
+        {
+          "name": "Assign Permissions to Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"permissionIds\": [\"<PERMISSION_ID_1>\", \"<PERMISSION_ID_2>\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/roles/{{roleId}}/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "roles", "{{roleId}}", "permissions"]
+            },
+            "description": "Assign permissions to a role (requires ROLE_UPDATE permission). This will append new permissions without deleting existing ones."
+          }
+        },
+        {
+          "name": "Remove Permissions from Role",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"permissionIds\": [\"<PERMISSION_ID_TO_REMOVE>\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/roles/{{roleId}}/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "roles", "{{roleId}}", "permissions"]
+            },
+            "description": "Remove permissions from a role (requires ROLE_UPDATE permission)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Location Management",
+      "item": [
+        {
+          "name": "Get All Provinces",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/provinces",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "provinces"]
+            },
+            "description": "Get all provinces (requires LOCATION_VIEW permission)"
+          }
+        },
+        {
+          "name": "Create Province",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name_en\": \"Test Province\",\n    \"name_kh\": \"ខេត្តសាកល្បង\",\n    \"code\": \"TP01\",\n    \"description\": \"A test province\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/provinces",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "provinces"]
+            },
+            "description": "Create new province (requires LOCATION_CREATE permission)"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();\npm.environment.set(\"provinceId\", jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Province",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{provinceId}}\",\n    \"name_en\": \"Updated Province\",\n    \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/provinces",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "provinces"]
+            },
+            "description": "Update province (requires LOCATION_UPDATE permission)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Province",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/provinces?id={{provinceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "provinces"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{provinceId}}"
+                }
+              ]
+            },
+            "description": "Delete province (requires LOCATION_DELETE permission)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Districts by Province",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/districts?provinceId={{provinceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "districts"],
+              "query": [
+                {
+                  "key": "provinceId",
+                  "value": "{{provinceId}}"
+                }
+              ]
+            },
+            "description": "Get districts by province (requires LOCATION_VIEW permission)"
+          }
+        },
+        {
+          "name": "Create District",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name_en\": \"Test District\",\n    \"name_kh\": \"ស្រុកសាកល្បង\",\n    \"code\": \"TD01\",\n    \"description\": \"A test district\",\n    \"province_id\": \"{{provinceId}}\",\n    \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/districts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "districts"]
+            },
+            "description": "Create new district (requires LOCATION_CREATE permission)"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();\npm.environment.set(\"districtId\", jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update District",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{districtId}}\",\n    \"name_en\": \"Updated District\",\n    \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/districts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "districts"]
+            },
+            "description": "Update district (requires LOCATION_UPDATE permission)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete District",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/districts?id={{districtId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "districts"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{districtId}}"
+                }
+              ]
+            },
+            "description": "Delete district (requires LOCATION_DELETE permission)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Communes by District",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/communes?districtId={{districtId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "communes"],
+              "query": [
+                {
+                  "key": "districtId",
+                  "value": "{{districtId}}"
+                }
+              ]
+            },
+            "description": "Get communes by district (requires LOCATION_VIEW permission)"
+          }
+        },
+        {
+          "name": "Create Commune",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name_en\": \"Test Commune\",\n    \"name_kh\": \"ឃុំសាកល្បង\",\n    \"code\": \"TC01\",\n    \"description\": \"A test commune\",\n    \"district_id\": \"{{districtId}}\",\n    \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/communes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "communes"]
+            },
+            "description": "Create new commune (requires LOCATION_CREATE permission)"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();\npm.environment.set(\"communeId\", jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Commune",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{communeId}}\",\n    \"name_en\": \"Updated Commune\",\n    \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/communes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "communes"]
+            },
+            "description": "Update commune (requires LOCATION_UPDATE permission)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Commune",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/communes?id={{communeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "communes"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{communeId}}"
+                }
+              ]
+            },
+            "description": "Delete commune (requires LOCATION_DELETE permission)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Villages by Commune",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/villages?communeId={{communeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "villages"],
+              "query": [
+                {
+                  "key": "communeId",
+                  "value": "{{communeId}}"
+                }
+              ]
+            },
+            "description": "Get villages by commune (requires LOCATION_VIEW permission)"
+          }
+        },
+        {
+          "name": "Create Village",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name_en\": \"Test Village\",\n    \"name_kh\": \"ភូមិសាកល្បង\",\n    \"code\": \"TV01\",\n    \"description\": \"A test village\",\n    \"commune_id\": \"{{communeId}}\",\n    \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/villages",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "villages"]
+            },
+            "description": "Create new village (requires LOCATION_CREATE permission)"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();\npm.environment.set(\"villageId\", jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Village",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{villageId}}\",\n    \"name_en\": \"Updated Village\",\n    \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/villages",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "villages"]
+            },
+            "description": "Update village (requires LOCATION_UPDATE permission)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Village",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/villages?id={{villageId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "villages"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{villageId}}"
+                }
+              ]
+            },
+            "description": "Delete village (requires LOCATION_DELETE permission)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Organization Management",
+      "item": [
+        {
+          "name": "Get All Organizations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/organizations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "organizations"]
+            },
+            "description": "Get all organizations (requires ORGANIZATION_VIEW permission)"
+          }
+        },
+        {
+          "name": "Create Organization",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name_en\": \"Test Organization\",\n    \"name_kh\": \"អង្គការសាកល្បង\",\n    \"code\": \"ORG01\",\n    \"type\": \"SCHOOL\",\n    \"province_id\": \"{{provinceId}}\",\n    \"district_id\": \"{{districtId}}\",\n    \"commune_id\": \"{{communeId}}\",\n    \"village_id\": \"{{villageId}}\",\n    \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/organizations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "organizations"]
+            },
+            "description": "Create new organization (requires ORGANIZATION_CREATE permission)"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();\npm.environment.set(\"organizationId\", jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Organization",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{organizationId}}\",\n    \"name_en\": \"Updated Organization\",\n    \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/organizations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "organizations"]
+            },
+            "description": "Update organization (requires ORGANIZATION_UPDATE permission)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Organization",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/locations/organizations?id={{organizationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "locations", "organizations"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{organizationId}}"
+                }
+              ]
+            },
+            "description": "Delete organization (requires ORGANIZATION_DELETE permission)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Staff Management",
+      "item": [
+        {
+          "name": "Get All Staff",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/staff",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "staff"]
+            },
+            "description": "Get all staff (requires STAFF_VIEW permission)"
+          }
+        },
+        {
+          "name": "Create Staff",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"phone\": \"1234567890\",\n    \"gender\": \"Male\",\n    \"date_of_birth\": \"1990-01-01T00:00:00.000Z\",\n    \"nationality\": \"Cambodian\",\n    \"code\": \"STAFF001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/staff",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "staff"]
+            },
+            "description": "Create new staff (requires STAFF_CREATE permission)"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();\npm.environment.set(\"staffId\", jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Staff",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{staffId}}\",\n    \"first_name\": \"Jane\",\n    \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/staff",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "staff"]
+            },
+            "description": "Update staff (requires STAFF_UPDATE permission)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Staff",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/staff?id={{staffId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "staff"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{staffId}}"
+                }
+              ]
+            },
+            "description": "Delete staff (requires STAFF_DELETE permission)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Level Management",
+      "item": [
+        {
+          "name": "Get All Level Types",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/levels/types",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "levels", "types"]
+            },
+            "description": "Get all level types (requires LEVEL_VIEW permission)"
+          }
+        },
+        {
+          "name": "Create Level Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name_en\": \"Test Level Type\",\n    \"name_kh\": \"ប្រភេទកម្រិតសាកល្បង\",\n    \"code\": \"TEST_LEVEL_TYPE\",\n    \"level_order\": 5,\n    \"can_manage\": [\"SCHOOL\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/levels/types",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "levels", "types"]
+            },
+            "description": "Create a new level type (requires LEVEL_CREATE permission)"
+          }
+        },
+        {
+          "name": "Update Level Type",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"<LEVEL_TYPE_ID>\",\n    \"name_en\": \"Updated Level Type\",\n    \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/levels/types",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "levels", "types"]
+            },
+            "description": "Update an existing level type (requires LEVEL_UPDATE permission)"
+          }
+        },
+        {
+          "name": "Delete Level Type",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/levels/types?id=<LEVEL_TYPE_ID>",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "levels", "types"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "<LEVEL_TYPE_ID>"
+                }
+              ]
+            },
+            "description": "Delete a level type (requires LEVEL_DELETE permission)"
+          }
+        },
+        {
+          "name": "Get User Levels",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/levels/user-levels",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "levels", "user-levels"]
+            },
+            "description": "Get all user levels (requires USER_LEVEL_VIEW permission)"
+          }
+        },
+        {
+          "name": "Create User Level",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user_id\": \"{{userId}}\",\n    \"level_type_id\": \"{{levelTypeId}}\",\n    \"level\": 1,\n    \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/levels/user-levels",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "levels", "user-levels"]
+            },
+            "description": "Create a new user level (requires USER_LEVEL_CREATE permission)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Test Endpoints",
+      "item": [
+        {
+          "name": "API is Working",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/test",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "test"]
+            },
+            "description": "Basic test endpoint to check if API is working"
+          },
+          "response": []
+        },
+        {
+          "name": "Permission Test",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/test-permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "test-permissions"]
+            },
+            "description": "Test permission checks with mock users"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ]
+} 
