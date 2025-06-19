@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAuditLogs, ActionType } from '@/services/auditService';
 import { checkPermission } from '@/middleware/checkPermission';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     // Check if user has permission to view logs

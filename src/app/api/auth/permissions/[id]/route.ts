@@ -4,6 +4,8 @@ import { checkPermission } from '@/middleware/checkPermission';
 
 const prisma = new PrismaClient();
 
+export const dynamic = 'force-dynamic';
+
 // GET single permission by ID
 export async function GET(
   request: NextRequest,
