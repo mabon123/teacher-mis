@@ -4,6 +4,8 @@ import { checkPermission } from '@/middleware/checkPermission';
 
 const prisma = new PrismaClient();
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     // Check if user has permission to view logs
