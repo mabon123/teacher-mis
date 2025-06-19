@@ -2,6 +2,8 @@ import { NextResponse, NextRequest } from 'next/server';
 import { getLocationAccessLogs } from '@/services/locationAudit';
 import { checkPermission } from '@/middleware/checkPermission';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     // Check if user has permission to view logs
