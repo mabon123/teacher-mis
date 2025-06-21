@@ -27,6 +27,12 @@ export async function GET(request: NextRequest) {
         }
       }
     });
+        // --- ADD CACHE-CONTROL HEADERS HERE ---
+    const response = NextResponse.json(provinces);
+    response.headers.set('Cache-Control', 'no-store, max-age=0, must-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+    // --- END CACHE-CONTROL HEADERS ---
     return NextResponse.json(provinces);
   } catch (error) {
     console.error('Error fetching provinces:', error);
