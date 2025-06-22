@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { checkPermission } from '@/middleware/checkPermission';
+import { permission } from 'process';
 
 const prisma = new PrismaClient();
 
@@ -26,8 +27,15 @@ export async function GET(request: NextRequest) {
         }
       }
     });
+
+    const formattedRoles = roles.map(role => ({
+      ...role,
+      permissions: (role.permission && Array.isArray(role.permission))
+      ? role.permission.map(rp=> rp.permission)
+      : []
+    }))
     // --- ADD CACHE-CONTROL HEADERS HERE ---
-    const response = NextResponse.json(roles);
+    const response = NextResponse.json(formattedRoles);
     response.headers.set('Cache-Control', 'no-store, max-age=0, must-revalidate');
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
