@@ -96,16 +96,4 @@ export async function DELETE(request: NextRequest) {
     console.error('Error deleting subject:', error);
     return NextResponse.json({ error: 'Failed to delete subject' }, { status: 500 });
   }
-}
-
-// GET all staff levels
-export async function GET_STAFF_LEVELS(request: NextRequest) {
-  const levels = await prisma.staffLevel.findMany();
-  return NextResponse.json(levels);
-}
-
-// GET all salary levels
-export async function GET_SALARY_LEVELS(request: NextRequest) {
-  const levels = await prisma.salaryLevel.findMany();
-  return NextResponse.json(levels);
 } 
