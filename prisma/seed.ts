@@ -4,6 +4,25 @@ import { hashPassword } from '../src/lib/auth';
 const prisma = new PrismaClient();
 
 async function main() {
+  // Create Location Types first
+  const nationalLocationType = await prisma.locationType.create({
+    data: {
+      code: "NATIONAL",
+      name_en: "National",
+      name_kh: "ជាតិ",
+      order: 1
+    }
+  });
+
+  const provinceLocationType = await prisma.locationType.create({
+    data: {
+      code: "PROVINCE",
+      name_en: "Province",
+      name_kh: "ខេត្ត",
+      order: 2
+    }
+  });
+
   // Create Level Types
   const nationalLevel = await prisma.levelType.create({
     data: {
@@ -11,7 +30,7 @@ async function main() {
       name_kh: "ថ្នាក់ជាតិ",
       code: "NATIONAL",
       level_order: 1,
-      can_manage: ["NATIONAL", "PROVINCE", "DISTRICT", "SCHOOL"],
+      is_active: true,
       created_by: "system",
       updated_by: "system"
     }
@@ -23,7 +42,7 @@ async function main() {
       name_kh: "ថ្នាក់ខេត្ត",
       code: "PROVINCE",
       level_order: 2,
-      can_manage: ["PROVINCE", "DISTRICT", "SCHOOL"],
+      is_active: true,
       can_manage_levels_ids: [nationalLevel.id],
       created_by: "system",
       updated_by: "system"
@@ -36,7 +55,7 @@ async function main() {
       name_kh: "ថ្នាក់ស្រុក",
       code: "DISTRICT",
       level_order: 3,
-      can_manage: ["DISTRICT", "SCHOOL"],
+      is_active: true,
       can_manage_levels_ids: [nationalLevel.id, provinceLevel.id],
       created_by: "system",
       updated_by: "system"
@@ -49,7 +68,7 @@ async function main() {
       name_kh: "ថ្នាក់សាលា",
       code: "SCHOOL",
       level_order: 4,
-      can_manage: ["SCHOOL"],
+      is_active: true,
       can_manage_levels_ids: [nationalLevel.id, provinceLevel.id, districtLevel.id],
       created_by: "system",
       updated_by: "system"
@@ -63,7 +82,7 @@ async function main() {
       name_kh: "ក្រសួងអប់រំ",
       code: "MOE",
       is_active: true,
-      type: "NATIONAL",
+      location_type_id: nationalLocationType.id,
       province_id: "phnom_penh_id",
       district_id: "central_id",
       created_by: "system",
@@ -77,7 +96,7 @@ async function main() {
       name_kh: "នាយកដ្ឋានអប់រំភ្នំពេញ",
       code: "PPED",
       is_active: true,
-      type: "PROVINCE",
+      location_type_id: provinceLocationType.id,
       province_id: "phnom_penh_id",
       district_id: "central_id",
       created_by: "system",
