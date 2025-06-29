@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { checkPermission } from '@/middleware/checkPermission';
+import { ObjectId } from 'mongodb';
 
 const prisma = new PrismaClient();
 
@@ -11,6 +12,10 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  if (!ObjectId.isValid(params.id)) {
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+  }
+
   try {
     const permissionCheck = await checkPermission(request, 'PERMISSION_VIEW');
     if (!permissionCheck.allowed || !permissionCheck.user) {

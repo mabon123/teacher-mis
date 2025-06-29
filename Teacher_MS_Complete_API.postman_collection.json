@@ -1,0 +1,1103 @@
+{
+  "info": {
+    "name": "Teacher Management System - Complete API",
+    "description": "Comprehensive API collection for Teacher Management System covering all features: Authentication, User Management, Role & Permission Management, Staff Management, Location Management, and System Configuration.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "organization_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('auth_token', response.token);",
+                  "    pm.collectionVariables.set('user_id', response.user.id);",
+                  "    pm.collectionVariables.set('organization_id', response.user.organization_id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Active Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/active-logs?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "active-logs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/audit-logs?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "audit-logs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/users?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newuser\",\n  \"password\": \"password123\",\n  \"is_active\": true,\n  \"organization_id\": \"{{organization_id}}\",\n  \"user_level_id\": \"user_level_id_here\",\n  \"role_ids\": [\"role_id_here\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/users",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "users", "{{user_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"updateduser\",\n  \"is_active\": true,\n  \"organization_id\": \"{{organization_id}}\",\n  \"user_level_id\": \"user_level_id_here\",\n  \"role_ids\": [\"role_id_here\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "users", "{{user_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "users", "{{user_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Role Management",
+      "item": [
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/roles?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "roles"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Teacher\",\n  \"name_kh\": \"គ្រូ\",\n  \"code\": \"TEACHER\",\n  \"is_active\": true,\n  \"description\": \"Teacher role\",\n  \"permission_ids\": [\"permission_id_1\", \"permission_id_2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/roles",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "roles"]
+            }
+          }
+        },
+        {
+          "name": "Get Role by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/roles/role_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "roles", "role_id_here"]
+            }
+          }
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Senior Teacher\",\n  \"name_kh\": \"គ្រូជាន់ខ្ពស់\",\n  \"code\": \"SENIOR_TEACHER\",\n  \"is_active\": true,\n  \"description\": \"Senior teacher role\",\n  \"permission_ids\": [\"permission_id_1\", \"permission_id_2\", \"permission_id_3\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/roles/role_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "roles", "role_id_here"]
+            }
+          }
+        },
+        {
+          "name": "Delete Role",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/roles/role_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "roles", "role_id_here"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Permission Management",
+      "item": [
+        {
+          "name": "Get All Permissions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/permissions?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "permissions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Permission",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Create Staff\",\n  \"name_kh\": \"បង្កើតបុគ្គលិក\",\n  \"code\": \"staff_create\",\n  \"is_active\": true,\n  \"description\": \"Permission to create staff\",\n  \"group_id\": \"group_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/permissions",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "permissions"]
+            }
+          }
+        },
+        {
+          "name": "Get Permission by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/permissions/permission_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "permissions", "permission_id_here"]
+            }
+          }
+        },
+        {
+          "name": "Update Permission",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Update Staff\",\n  \"name_kh\": \"កែប្រែបុគ្គលិក\",\n  \"code\": \"staff_update\",\n  \"is_active\": true,\n  \"description\": \"Permission to update staff\",\n  \"group_id\": \"group_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/permissions/permission_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "permissions", "permission_id_here"]
+            }
+          }
+        },
+        {
+          "name": "Delete Permission",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/permissions/permission_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "permissions", "permission_id_here"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Permission Groups",
+      "item": [
+        {
+          "name": "Get All Permission Groups",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/permissions/group?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "permissions", "group"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Permission Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Staff Management\",\n  \"name_kh\": \"ការគ្រប់គ្រងបុគ្គលិក\",\n  \"code\": \"staff_management\",\n  \"is_active\": true,\n  \"description\": \"Permissions related to staff management\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/permissions/group",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "permissions", "group"]
+            }
+          }
+        },
+        {
+          "name": "Get Permission Group by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/permissions/group/group_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "permissions", "group", "group_id_here"]
+            }
+          }
+        },
+        {
+          "name": "Update Permission Group",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Staff & User Management\",\n  \"name_kh\": \"ការគ្រប់គ្រងបុគ្គលិកនិងអ្នកប្រើប្រាស់\",\n  \"code\": \"staff_user_management\",\n  \"is_active\": true,\n  \"description\": \"Permissions related to staff and user management\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/permissions/group/group_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "permissions", "group", "group_id_here"]
+            }
+          }
+        },
+        {
+          "name": "Delete Permission Group",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/permissions/group/group_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "permissions", "group", "group_id_here"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Staff Management",
+      "item": [
+        {
+          "name": "Get All Staff",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/staff?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["staff"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Staff",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"STAFF001\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john.doe@school.edu.kh\",\n  \"phone\": \"+85512345678\",\n  \"gender\": \"Male\",\n  \"date_of_birth\": \"1990-01-01\",\n  \"nationality\": \"Cambodian\",\n  \"subjectIds\": [\"subject_id_1\", \"subject_id_2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/staff",
+              "host": ["{{base_url}}"],
+              "path": ["staff"]
+            }
+          }
+        },
+        {
+          "name": "Get Staff by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/staff/staff_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["staff", "staff_id_here"]
+            }
+          }
+        },
+        {
+          "name": "Update Staff",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"STAFF001\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"email\": \"john.smith@school.edu.kh\",\n  \"phone\": \"+85512345678\",\n  \"gender\": \"Male\",\n  \"date_of_birth\": \"1990-01-01\",\n  \"nationality\": \"Cambodian\",\n  \"subjectIds\": [\"subject_id_1\", \"subject_id_2\", \"subject_id_3\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/staff/staff_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["staff", "staff_id_here"]
+            }
+          }
+        },
+        {
+          "name": "Delete Staff",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/staff/staff_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["staff", "staff_id_here"]
+            }
+          }
+        },
+        {
+          "name": "Staff Transfer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"staffId\": \"staff_id_here\",\n  \"newOrganizationId\": \"new_org_id_here\",\n  \"newPosition\": \"Senior Teacher\",\n  \"effectiveDate\": \"2024-01-01\",\n  \"note\": \"Transfer to new school\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/staff/transfer",
+              "host": ["{{base_url}}"],
+              "path": ["staff", "transfer"]
+            }
+          }
+        },
+        {
+          "name": "Get Staff History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/staff/staff_id_here/history",
+              "host": ["{{base_url}}"],
+              "path": ["staff", "staff_id_here", "history"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Staff Levels",
+      "item": [
+        {
+          "name": "Get All Staff Levels",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/staff-levels?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["staff-levels"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Staff Level",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Senior Teacher\",\n  \"name_kh\": \"គ្រូជាន់ខ្ពស់\",\n  \"code\": \"SENIOR_TEACHER\",\n  \"description\": \"Senior teacher level\",\n  \"salary_level_ids\": [\"salary_level_id_1\", \"salary_level_id_2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/staff-levels",
+              "host": ["{{base_url}}"],
+              "path": ["staff-levels"]
+            }
+          }
+        },
+        {
+          "name": "Get Staff Level by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/staff-levels/staff_level_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["staff-levels", "staff_level_id_here"]
+            }
+          }
+        },
+        {
+          "name": "Update Staff Level",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Lead Teacher\",\n  \"name_kh\": \"គ្រូដឹកនាំ\",\n  \"code\": \"LEAD_TEACHER\",\n  \"description\": \"Lead teacher level\",\n  \"salary_level_ids\": [\"salary_level_id_1\", \"salary_level_id_2\", \"salary_level_id_3\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/staff-levels/staff_level_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["staff-levels", "staff_level_id_here"]
+            }
+          }
+        },
+        {
+          "name": "Delete Staff Level",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/staff-levels/staff_level_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["staff-levels", "staff_level_id_here"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Salary Levels",
+      "item": [
+        {
+          "name": "Get All Salary Levels",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/salary-levels?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["salary-levels"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Salary Level",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SL1\",\n  \"description\": \"Salary Level 1\",\n  \"staff_level_ids\": [\"staff_level_id_1\", \"staff_level_id_2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/salary-levels",
+              "host": ["{{base_url}}"],
+              "path": ["salary-levels"]
+            }
+          }
+        },
+        {
+          "name": "Get Salary Level by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/salary-levels/salary_level_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["salary-levels", "salary_level_id_here"]
+            }
+          }
+        },
+        {
+          "name": "Update Salary Level",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SL2\",\n  \"description\": \"Salary Level 2\",\n  \"staff_level_ids\": [\"staff_level_id_1\", \"staff_level_id_2\", \"staff_level_id_3\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/salary-levels/salary_level_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["salary-levels", "salary_level_id_here"]
+            }
+          }
+        },
+        {
+          "name": "Delete Salary Level",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/salary-levels/salary_level_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["salary-levels", "salary_level_id_here"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Subjects",
+      "item": [
+        {
+          "name": "Get All Subjects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/subjects?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["subjects"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Subject",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Mathematics\",\n  \"name_kh\": \"គណិតវិទ្យា\",\n  \"code\": \"MATH\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/subjects",
+              "host": ["{{base_url}}"],
+              "path": ["subjects"]
+            }
+          }
+        },
+        {
+          "name": "Get Subject by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/subjects/subject_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["subjects", "subject_id_here"]
+            }
+          }
+        },
+        {
+          "name": "Update Subject",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Advanced Mathematics\",\n  \"name_kh\": \"គណិតវិទ្យាកម្រិតខ្ពស់\",\n  \"code\": \"ADV_MATH\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/subjects/subject_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["subjects", "subject_id_here"]
+            }
+          }
+        },
+        {
+          "name": "Delete Subject",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/subjects/subject_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["subjects", "subject_id_here"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Location Management",
+      "item": [
+        {
+          "name": "Get All Provinces",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/locations/provinces?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["locations", "provinces"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Districts by Province",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/locations/districts?province_id=province_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["locations", "districts"],
+              "query": [
+                {
+                  "key": "province_id",
+                  "value": "province_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Communes by District",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/locations/communes?district_id=district_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["locations", "communes"],
+              "query": [
+                {
+                  "key": "district_id",
+                  "value": "district_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Villages by Commune",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/locations/villages?commune_id=commune_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["locations", "villages"],
+              "query": [
+                {
+                  "key": "commune_id",
+                  "value": "commune_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Organizations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/locations/organizations?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["locations", "organizations"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Level Management",
+      "item": [
+        {
+          "name": "Get Level Types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/levels/types?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["levels", "types"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User Levels",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/staff/levels?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["staff", "levels"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Academic Years",
+      "item": [
+        {
+          "name": "Get All Academic Years",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/academic-years?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["academic-years"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Academic Year",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"2024-2025\",\n  \"name_kh\": \"២០២៤-២០២៥\",\n  \"start\": \"2024-09-01\",\n  \"end\": \"2025-06-30\",\n  \"is_active\": true,\n  \"description\": \"Academic year 2024-2025\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/academic-years",
+              "host": ["{{base_url}}"],
+              "path": ["academic-years"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+} 

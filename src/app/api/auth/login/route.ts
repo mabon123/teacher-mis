@@ -7,11 +7,6 @@ export const runtime = 'nodejs';
 // Define allowed origin(s)
 const allowedOrigin = 'http://localhost:5173'; // For development
 
-// In production, change this to your actual deployed frontend URL, e.g.:
-// const allowedOrigin = 'https://your-production-frontend.com';
-// Or, for multiple origins:
-// const allowedOrigins = ['http://localhost:5173', 'https://your-production-frontend.com'];
-
 
 // --- NEW: Handle OPTIONS (Preflight) requests specifically ---
 export async function OPTIONS(request: NextRequest) {

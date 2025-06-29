@@ -23,17 +23,25 @@ export async function GET(request: NextRequest) {
     const staff = await prisma.staff.findMany({
       include: {
         creator: {
-          select: {
-            username: true
-          }
+          select: { username: true }
         },
         updater: {
-          select: {
-            username: true
-          }
+          select: { username: true }
         }
       }
     });
+
+    // Fetch subjects for each staff
+    const staffWithSubjects = await Promise.all(staff.map(async s => {
+      const staffSubjects = await prisma.staffSubject.findMany({
+        where: { staff_id: s.id },
+        include: { subject: true }
+      });
+      return {
+        ...s,
+        subjects: staffSubjects.map((ss: any) => ss.subject)
+      };
+    }));
 
     // Log the view action
     const { ip, userAgent } = getClientInfo(request);
@@ -45,7 +53,7 @@ export async function GET(request: NextRequest) {
       userAgent
     });
 
-    return NextResponse.json(staff);
+    return NextResponse.json(staffWithSubjects);
   } catch (error: unknown) {
     console.error('Error fetching staff:', error);
     return NextResponse.json({ error: 'Failed to fetch staff' }, { status: 500 });
@@ -68,10 +76,15 @@ export async function POST(request: NextRequest) {
       date_of_birth, 
       phone, 
       email, 
-      nationality 
+      nationality,
+      organization_id,
+      position,
+      start_date,
+      note,
+      subjectIds
     } = body;
 
-    if (!first_name || !last_name || !gender || !date_of_birth || !nationality) {
+    if (!first_name || !last_name || !gender || !date_of_birth || !nationality || !organization_id) {
       return NextResponse.json(
         { error: 'Required fields missing' },
         { status: 400 }
@@ -89,9 +102,38 @@ export async function POST(request: NextRequest) {
         email,
         nationality,
         created_by: permissionCheck.user.id,
-        updated_by: permissionCheck.user.id
-      }
+        updated_by: permissionCheck.user.id,
+        history: {
+          create: [{
+            organization_id,
+            position,
+            start_date: start_date ? new Date(start_date) : new Date(),
+            note: note || 'Initial assignment',
+            changed_by_id: permissionCheck.user.id
+          }]
+        }
+      },
+      include: { history: true }
     });
+
+    // If subjectIds provided, create StaffSubject records
+    if (subjectIds && Array.isArray(subjectIds) && subjectIds.length > 0) {
+      await Promise.all(subjectIds.map((subjectId: string) =>
+        prisma.staffSubject.create({
+          data: { staff_id: staff.id, subject_id: subjectId }
+        })
+      ));
+    }
+
+    // Fetch subjects for the created staff
+    const staffSubjects = await prisma.staffSubject.findMany({
+      where: { staff_id: staff.id },
+      include: { subject: true }
+    });
+    const staffWithSubjects = {
+      ...staff,
+      subjects: staffSubjects.map((ss: any) => ss.subject)
+    };
 
     // Log the create action
     const { ip, userAgent } = getClientInfo(request);
@@ -100,13 +142,13 @@ export async function POST(request: NextRequest) {
       action: 'STAFF_CREATE',
       entityId: staff.id,
       entityType: 'STAFF',
-      details: JSON.stringify({ first_name, last_name, gender }),
+      details: JSON.stringify({ first_name, last_name, gender, organization_id, position, subjectIds }),
       success: true,
       ipAddress: ip,
       userAgent
     });
 
-    return NextResponse.json(staff, { status: 201 });
+    return NextResponse.json(staffWithSubjects, { status: 201 });
   } catch (error: unknown) {
     console.error('Error creating staff:', error);
     return NextResponse.json({ error: 'Failed to create staff' }, { status: 500 });

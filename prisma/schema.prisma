@@ -52,8 +52,8 @@ model User {
  updated_at DateTime @updatedAt
 
  //staff relation
- staff Staff[] @relation("StaffCreator")
- staff_updated Staff[] @relation("StaffUpdater")
+ staff_id String?  @db.ObjectId @unique
+ staff     Staff?   @relation(fields: [staff_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
  //level type relation
  created_level_types LevelType[] @relation("LevelTypeCreator")
@@ -62,6 +62,11 @@ model User {
  //user level relation
  created_user_levels UserLevel[] @relation("UserLevelCreator")
  updated_user_levels UserLevel[] @relation("UserLevelUpdater")
+
+ staff_created Staff[] @relation("StaffCreator")
+ staff_updated Staff[] @relation("StaffUpdater")
+
+ staff_history_changes StaffHistory[] @relation("StaffHistoryChangedBy")
 }
 
 // role
@@ -78,6 +83,19 @@ model Role {
  updated_at DateTime @updatedAt
 }
 
+//Permission group
+model PermissionGroup {
+ id String @id @default(auto()) @map("_id") @db.ObjectId
+ name_en String
+ name_kh String
+ code String @unique
+ is_active Boolean
+ description String?
+ permissions Permission[]
+ created_at DateTime @default(now())
+ updated_at DateTime @updatedAt
+}
+
 // permission
 model Permission {
  id String @id @default(auto()) @map("_id") @db.ObjectId
@@ -86,6 +104,8 @@ model Permission {
  code String
  is_active Boolean
  description String?
+ group_id String? @db.ObjectId
+ group PermissionGroup? @relation(fields: [group_id], references: [id])
  role RolePermission[]
  created_at DateTime @default(now())
  updated_at DateTime @updatedAt
@@ -209,15 +229,13 @@ model Village {
 
 //Base staff model to track all staff information
 model Staff {
-
- //staff information
- id String @id @default(auto()) @map("_id") @db.ObjectId
- code String @unique
+ id        String   @id @default(auto()) @map("_id") @db.ObjectId
+ code      String   @unique
  first_name String
  last_name String
- email String? @unique
- phone String? @unique
- gender String
+ email     String?  @unique
+ phone     String?  @unique
+ gender    String
  date_of_birth DateTime
  nationality String
 
@@ -228,8 +246,16 @@ model Staff {
  //user relation
  created_by String? @db.ObjectId
  updated_by String? @db.ObjectId
- creator User? @relation("StaffCreator", fields: [created_by], references: [id])
- updater User? @relation("StaffUpdater", fields: [updated_by], references: [id])
+ creator   User?    @relation("StaffCreator", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+ updater   User?    @relation("StaffUpdater", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+ user      User?
+ user_id   String?  @db.ObjectId @unique
+
+ history StaffHistory[]
+
+ staff_subjects StaffSubject[]
+ timetableEntries TimetableEntry[]
 }
 
 // organization
@@ -240,7 +266,8 @@ model Organization {
  code String
  is_active Boolean
  description String?
- type LocationType
+ location_type_id String @db.ObjectId
+ location_type LocationType @relation(fields: [location_type_id], references: [id])
 
  //location relation
  province_id String @db.ObjectId
@@ -267,13 +294,22 @@ model Organization {
  //timestamp
  created_at DateTime @default(now())
  updated_at DateTime @updatedAt
+
+ staff_history StaffHistory[]
 }
 
-enum LocationType {
-  NATIONAL
-  PROVINCE
-  DISTRICT
-  SCHOOL
+model LocationType {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  code        String   @unique
+  name_en     String
+  name_kh     String
+  description String?
+  order       Int?
+  parent_id   String?  @db.ObjectId
+  parent      LocationType? @relation("LocationTypeParent", fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children    LocationType[] @relation("LocationTypeParent")
+  organizations Organization[]
+  managed_by_level_type_relations LevelTypeCanManageLocationType[]
 }
 
 // Level Type model for defining different types of levels
@@ -287,7 +323,7 @@ model LevelType {
 
  // Level configuration
  level_order Int // Order in hierarchy (1 being highest)
- can_manage LocationType[] // What location types this level can manage
+ can_manage_relations LevelTypeCanManageLocationType[]
  can_manage_levels_ids String[] @db.ObjectId
  can_manage_levels LevelType[] @relation("LevelTypeHierarchy", fields: [can_manage_levels_ids], references: [id])
  managed_by_levels_ids String[] @db.ObjectId
@@ -330,4 +366,137 @@ model UserLevel {
  updated_by String? @db.ObjectId
  creator User? @relation("UserLevelCreator", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
  updater User? @relation("UserLevelUpdater", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model LevelTypeCanManageLocationType {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  level_type_id String @db.ObjectId
+  location_type_id String @db.ObjectId
+  level_type LevelType @relation(fields: [level_type_id], references: [id])
+  location_type LocationType @relation(fields: [location_type_id], references: [id])
+}
+
+model StaffLevel {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name_en   String
+  name_kh   String
+  code      String   @unique
+  description String?
+  salary_levels SalaryLevelOnStaffLevel[]
+  staff_history StaffHistory[]
+}
+
+model SalaryLevel {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  code      String
+  description String?
+  staff_levels SalaryLevelOnStaffLevel[]
+  staff_history StaffHistory[]
+}
+
+model SalaryLevelOnStaffLevel {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  staff_level_id String     @db.ObjectId
+  salary_level_id String    @db.ObjectId
+  staff_level   StaffLevel  @relation(fields: [staff_level_id], references: [id])
+  salary_level  SalaryLevel @relation(fields: [salary_level_id], references: [id])
+}
+
+model AcademicYear {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name_en      String   // e.g. "2023-2024"
+  name_kh   String
+  start     DateTime
+  end       DateTime
+  is_active Boolean  @default(true)
+  description String?
+  staff_history StaffHistory[]
+  timetableEntries TimetableEntry[]
+}
+
+model StaffHistory {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  staff_id        String   @db.ObjectId
+  staff           Staff    @relation(fields: [staff_id], references: [id])
+  organization_id String   @db.ObjectId
+  organization    Organization @relation(fields: [organization_id], references: [id])
+  position        String?
+  start_date      DateTime
+  end_date        DateTime?
+  changed_by_id   String?  @db.ObjectId
+  changed_by      User?    @relation("StaffHistoryChangedBy", fields: [changed_by_id], references: [id])
+  note            String?
+  created_at      DateTime @default(now())
+  staff_level_id  String?  @db.ObjectId
+  staff_level     StaffLevel? @relation(fields: [staff_level_id], references: [id])
+  salary_level_id String?  @db.ObjectId
+  salary_level    SalaryLevel? @relation(fields: [salary_level_id], references: [id])
+  academic_year_id String? @db.ObjectId
+  academic_year    AcademicYear? @relation(fields: [academic_year_id], references: [id])
+}
+
+model Subject {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name_en   String
+  name_kh   String
+  code      String   @unique
+  is_active Boolean  @default(true)
+  staff_subjects StaffSubject[]
+  timetableEntries TimetableEntry[]
+}
+
+model StaffSubject {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  staff_id  String   @db.ObjectId
+  subject_id String  @db.ObjectId
+  staff     Staff    @relation(fields: [staff_id], references: [id])
+  subject   Subject  @relation(fields: [subject_id], references: [id])
+}
+
+model Classroom {
+  id               String           @id @map("_id") @db.ObjectId
+  schoolId         String           @db.ObjectId
+  // school           School           @relation(fields: [schoolId], references: [id])
+  name             String           // e.g., "Room 101", "Science Lab A", "Auditorium"
+  type             String           // e.g., "General Classroom", "Science Lab", "Computer Lab", "Gym"
+  capacity         Int?             // Maximum student capacity
+  isSpecialized    Boolean          @default(false) // True for labs, workshops etc.
+  description      String?
+  totalStudents    Int?             // Total number of students in this classroom
+  totalFemaleStudents Int?          // Total number of female students in this classroom
+  // timetableEntries TimetableEntry[]
+  timetableEntries TimetableEntry[]
+
+  @@unique([schoolId, name]) // Ensures unique classroom names per school
+  @@map("classrooms")
+}
+
+model TimetableEntry {
+  id                  String      @id @default(auto()) @map("_id") @db.ObjectId
+  academicYearId      String      @db.ObjectId
+  gradeLevelId        String      @db.ObjectId
+  subjectId           String      @db.ObjectId
+  staffId             String      @db.ObjectId
+  classroomId         String      @db.ObjectId
+  dayOfWeek           Int
+  startTime           DateTime    @db.Date
+  endTime             DateTime    @db.Date
+  periodLengthMinutes Int
+  sessionType         String?
+  rotationDay         String?
+
+  academicYear        AcademicYear @relation(fields: [academicYearId], references: [id])
+  gradeLevel          GradeLevel   @relation(fields: [gradeLevelId], references: [id])
+  subject             Subject      @relation(fields: [subjectId], references: [id])
+  staff               Staff        @relation(fields: [staffId], references: [id])
+  classroom           Classroom    @relation(fields: [classroomId], references: [id])
+
+  @@index([academicYearId, gradeLevelId, dayOfWeek, startTime])
+  @@map("timetable_entries")
+}
+
+model GradeLevel {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  timetableEntries TimetableEntry[]
 }

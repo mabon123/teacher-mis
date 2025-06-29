@@ -30,7 +30,6 @@ export async function GET(request: NextRequest) {
 // POST create new permission
 export async function POST(request: NextRequest) {
   try {
-
     const permissionCheck = await checkPermission(request, 'PERMISSION_CREATE');
     if (!permissionCheck.allowed || !permissionCheck.user) {
       return permissionCheck.response;
@@ -117,3 +116,4 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to delete permission' }, { status: 500 });
   }
 } 
+

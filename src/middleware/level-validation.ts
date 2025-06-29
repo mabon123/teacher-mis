@@ -32,21 +32,26 @@ export async function validateLevelAccess(req: NextRequest) {
       return NextResponse.json({ error: 'User level not found' }, { status: 403 });
     }
 
-    // Validate level hierarchy
+    // Get the target organization's location_type_id
     const targetOrg = await prisma.organization.findUnique({
-      where: { id: organizationId }
+      where: { id: organizationId },
+      select: { location_type_id: true }
     });
 
     if (!targetOrg) {
       return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
     }
 
-    // Check if user's level can manage the target organization's type
-    const canManage = user.user_level.level_type.can_manage.includes(targetOrg.type);
+    // Check if user's level_type can manage this location_type_id
+    const canManage = await prisma.levelTypeCanManageLocationType.findFirst({
+      where: {
+        level_type_id: user.user_level.level_type.id,
+        location_type_id: targetOrg.location_type_id
+      }
+    });
     if (!canManage) {
       return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
     }
-
     return null; // Continue with the request
   } catch (error) {
     console.error('Level validation failed:', error);

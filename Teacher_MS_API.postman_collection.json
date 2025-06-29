@@ -1,0 +1,756 @@
+{
+  "info": {
+    "name": "Teacher Management System API",
+    "description": "Complete API collection for Teacher Management System with authentication, user management, staff transfers, and location management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\",\n  \"location\": \"Phnom Penh\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.token) {",
+                  "        pm.collectionVariables.set('auth_token', response.token);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users"]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"john.doe\",\n  \"password\": \"securepassword\",\n  \"roles\": []\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"user_id_here\",\n  \"username\": \"john.doe.updated\",\n  \"password\": \"newpassword\",\n  \"roles\": [],\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users"]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users?id=user_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Role Management",
+      "item": [
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles"]
+            }
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"School Administrator\",\n  \"name_kh\": \"អ្នកគ្រប់គ្រងសាលា\",\n  \"code\": \"SCHOOL_ADMIN\",\n  \"description\": \"Can manage school-level operations\",\n  \"is_active\": true,\n  \"permissions\": []\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles"]
+            }
+          }
+        },
+        {
+          "name": "Assign Permissions to Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"permissionIds\": [\"permission_id_1\", \"permission_id_2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/roles/role_id_here/permissions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "roles", "role_id_here", "permissions"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Permission Management",
+      "item": [
+        {
+          "name": "Get All Permissions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/permissions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "permissions"]
+            }
+          }
+        },
+        {
+          "name": "Create Permission",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Staff Transfer\",\n  \"name_kh\": \"ផ្ទេរបុគ្គលិក\",\n  \"code\": \"STAFF_TRANSFER\",\n  \"description\": \"Can transfer staff between organizations\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/permissions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "permissions"]
+            }
+          }
+        },
+        {
+          "name": "Get Permission Groups",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/permissions/group",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "permissions", "group"]
+            }
+          }
+        },
+        {
+          "name": "Create Permission Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Staff Management\",\n  \"name_kh\": \"ការគ្រប់គ្រងបុគ្គលិក\",\n  \"code\": \"STAFF_MANAGEMENT\",\n  \"description\": \"Permissions related to staff management\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/permissions/group",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "permissions", "group"]
+            }
+          }
+        },
+        {
+          "name": "Get Permission Group by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/permissions/group/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "permissions", "group", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Update Permission Group",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Updated Name\",\n  \"name_kh\": \"ឈ្មោះថ្មី\",\n  \"code\": \"UPDATED_CODE\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/permissions/group/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "permissions", "group", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Delete Permission Group",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/permissions/group/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "permissions", "group", ":id"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Location Management",
+      "item": [
+        {
+          "name": "Get All Provinces",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/locations/provinces",
+              "host": ["{{base_url}}"],
+              "path": ["api", "locations", "provinces"]
+            }
+          }
+        },
+        {
+          "name": "Create Province",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Phnom Penh\",\n  \"name_kh\": \"ភ្នំពេញ\",\n  \"code\": \"PP\",\n  \"description\": \"Capital city\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/locations/provinces",
+              "host": ["{{base_url}}"],
+              "path": ["api", "locations", "provinces"]
+            }
+          }
+        },
+        {
+          "name": "Get All Organizations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/locations/organizations",
+              "host": ["{{base_url}}"],
+              "path": ["api", "locations", "organizations"]
+            }
+          }
+        },
+        {
+          "name": "Create Organization",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Sunrise School\",\n  \"name_kh\": \"សាលារៀនព្រះអាទិត្យរះ\",\n  \"code\": \"SS001\",\n  \"description\": \"Primary school in Phnom Penh\",\n  \"type\": \"SCHOOL\",\n  \"province_id\": \"province_id_here\",\n  \"district_id\": \"district_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/locations/organizations",
+              "host": ["{{base_url}}"],
+              "path": ["api", "locations", "organizations"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Staff Management",
+      "item": [
+        {
+          "name": "Get All Staff",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/staff",
+              "host": ["{{base_url}}"],
+              "path": ["api", "staff"]
+            }
+          }
+        },
+        {
+          "name": "Create Staff",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"ST001\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john.doe@school.com\",\n  \"phone\": \"+85512345678\",\n  \"gender\": \"Male\",\n  \"date_of_birth\": \"1990-01-01\",\n  \"nationality\": \"Cambodian\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/staff",
+              "host": ["{{base_url}}"],
+              "path": ["api", "staff"]
+            }
+          }
+        },
+        {
+          "name": "Transfer Staff",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"staffId\": \"staff_id_here\",\n  \"targetOrganizationId\": \"new_organization_id\",\n  \"position\": \"Teacher\",\n  \"effectiveDate\": \"2024-01-15\",\n  \"note\": \"Academic year transfer\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/staff/transfer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "staff", "transfer"]
+            }
+          }
+        },
+        {
+          "name": "Get Staff Transfer History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/staff/transfer?staffId=staff_id_here",
+              "host": ["{{base_url}}"],
+              "path": ["api", "staff", "transfer"],
+              "query": [
+                {
+                  "key": "staffId",
+                  "value": "staff_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Level Management",
+      "item": [
+        {
+          "name": "Get All Level Types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/levels/types",
+              "host": ["{{base_url}}"],
+              "path": ["api", "levels", "types"]
+            }
+          }
+        },
+        {
+          "name": "Create Level Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"School Administrator\",\n  \"name_kh\": \"អ្នកគ្រប់គ្រងសាលា\",\n  \"code\": \"SCHOOL_ADMIN\",\n  \"level_order\": 3,\n  \"can_manage\": [\"SCHOOL\"],\n  \"can_manage_levels_ids\": [],\n  \"created_by\": \"system\",\n  \"updated_by\": \"system\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/levels/types",
+              "host": ["{{base_url}}"],
+              "path": ["api", "levels", "types"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Audit & Logs",
+      "item": [
+        {
+          "name": "Get Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/audit-logs?startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "audit-logs"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Active Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/active-logs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "active-logs"]
+            }
+          }
+        },
+        {
+          "name": "Get Location Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/location-logs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "location-logs"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Timetable Management",
+      "item": [
+        {
+          "name": "List Timetable Entries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/timetable-entries?academicYearId=...&gradeLevelId=...&subjectId=...&staffId=...&classroomId=...&dayOfWeek=...",
+              "host": ["{{base_url}}"],
+              "path": ["api", "timetable-entries"],
+              "query": [
+                { "key": "academicYearId", "value": "" },
+                { "key": "gradeLevelId", "value": "" },
+                { "key": "subjectId", "value": "" },
+                { "key": "staffId", "value": "" },
+                { "key": "classroomId", "value": "" },
+                { "key": "dayOfWeek", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Timetable Entry",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"academicYearId\": \"...\",\n  \"gradeLevelId\": \"...\",\n  \"subjectId\": \"...\",\n  \"staffId\": \"...\",\n  \"classroomId\": \"...\",\n  \"dayOfWeek\": 1,\n  \"startTime\": \"2024-06-01T08:00:00.000Z\",\n  \"endTime\": \"2024-06-01T09:00:00.000Z\",\n  \"periodLengthMinutes\": 60,\n  \"sessionType\": \"Morning\",\n  \"rotationDay\": \"A\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/timetable-entries",
+              "host": ["{{base_url}}"],
+              "path": ["api", "timetable-entries"]
+            }
+          }
+        },
+        {
+          "name": "Get Timetable Entry by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/timetable-entries/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "timetable-entries", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Update Timetable Entry",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"academicYearId\": \"...\",\n  \"gradeLevelId\": \"...\",\n  \"subjectId\": \"...\",\n  \"staffId\": \"...\",\n  \"classroomId\": \"...\",\n  \"dayOfWeek\": 1,\n  \"startTime\": \"2024-06-01T08:00:00.000Z\",\n  \"endTime\": \"2024-06-01T09:00:00.000Z\",\n  \"periodLengthMinutes\": 60,\n  \"sessionType\": \"Morning\",\n  \"rotationDay\": \"A\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/timetable-entries/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "timetable-entries", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Delete Timetable Entry",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/timetable-entries/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "timetable-entries", ":id"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sample Data Creation",
+      "item": [
+        {
+          "name": "Create Academic Year",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"2024-2025\",\n  \"name_kh\": \"២០២៤-២០២៥\",\n  \"start\": \"2024-08-01T00:00:00.000Z\",\n  \"end\": \"2025-07-31T23:59:59.999Z\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/academic-years",
+              "host": ["{{base_url}}"],
+              "path": ["api", "academic-years"]
+            }
+          }
+        },
+        {
+          "name": "Create Grade Level",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Grade 7\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/levels/types",
+              "host": ["{{base_url}}"],
+              "path": ["api", "levels", "types"]
+            }
+          }
+        },
+        {
+          "name": "Create Subject",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Mathematics\",\n  \"name_kh\": \"គណិតវិទ្យា\",\n  \"code\": \"MATH\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/subjects",
+              "host": ["{{base_url}}"],
+              "path": ["api", "subjects"]
+            }
+          }
+        },
+        {
+          "name": "Create Staff (Teacher)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"T001\",\n  \"first_name\": \"Sok\",\n  \"last_name\": \"Dara\",\n  \"email\": \"sok.dara@example.com\",\n  \"phone\": \"012345678\",\n  \"gender\": \"M\",\n  \"date_of_birth\": \"1990-01-01T00:00:00.000Z\",\n  \"nationality\": \"Khmer\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/staff",
+              "host": ["{{base_url}}"],
+              "path": ["api", "staff"]
+            }
+          }
+        },
+        {
+          "name": "Create Classroom",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolId\": \"SCHOOL_ID_HERE\",\n  \"name\": \"Room 101\",\n  \"type\": \"General Classroom\",\n  \"capacity\": 40\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/locations/classrooms",
+              "host": ["{{base_url}}"],
+              "path": ["api", "locations", "classrooms"]
+            }
+          }
+        },
+        {
+          "name": "Assign Subject to Staff",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"staffId\": \"STAFF_ID_HERE\",\n  \"subjectId\": \"SUBJECT_ID_HERE\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/staff-subjects",
+              "host": ["{{base_url}}"],
+              "path": ["api", "staff-subjects"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+} 

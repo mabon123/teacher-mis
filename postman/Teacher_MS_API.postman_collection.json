@@ -1,0 +1,148 @@
+{
+  "info": {
+    "name": "Teacher Management System API",
+    "description": "Complete API collection for Teacher Management System with authentication, user management, staff transfers, and location management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\",\n  \"location\": \"Phnom Penh\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.token) {",
+                  "        pm.collectionVariables.set('auth_token', response.token);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users"]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"john.doe\",\n  \"password\": \"securepassword\",\n  \"roles\": []\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "users"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Staff Management",
+      "item": [
+        {
+          "name": "Get All Staff",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/staff",
+              "host": ["{{base_url}}"],
+              "path": ["api", "staff"]
+            }
+          }
+        },
+        {
+          "name": "Transfer Staff",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"staffId\": \"staff_id_here\",\n  \"targetOrganizationId\": \"new_organization_id\",\n  \"position\": \"Teacher\",\n  \"effectiveDate\": \"2024-01-15\",\n  \"note\": \"Academic year transfer\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/staff/transfer",
+              "host": ["{{base_url}}"],
+              "path": ["api", "staff", "transfer"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+} 
