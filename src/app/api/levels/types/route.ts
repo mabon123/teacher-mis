@@ -64,10 +64,10 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name_en, name_kh, code, level_order, can_manage, can_manage_levels_ids, description } = body;
+    const { name_en, name_kh, code, level_order, can_manage_levels_ids, description } = body;
 
     // Validate required fields
-    if (!name_en || !name_kh || !code || !level_order || !can_manage) {
+    if (!name_en || !name_kh || !code || !level_order) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -80,7 +80,6 @@ export async function POST(request: NextRequest) {
         name_kh,
         code,
         level_order,
-        can_manage,
         can_manage_levels_ids: can_manage_levels_ids || [],
         description,
         created_by: permissionCheck.user.id,
@@ -115,7 +114,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { id, name_en, name_kh, code, level_order, can_manage, can_manage_levels_ids, description } = body;
+    const { id, name_en, name_kh, code, level_order, can_manage_levels_ids, description } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -143,7 +142,6 @@ export async function PUT(request: NextRequest) {
         name_kh,
         code,
         level_order,
-        can_manage,
         can_manage_levels_ids: can_manage_levels_ids || [],
         description,
         updated_by: permissionCheck.user.id

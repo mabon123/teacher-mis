@@ -21,18 +21,19 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
-    const type = searchParams.get('type');
+    const locationTypeId = searchParams.get('locationTypeId');
     const provinceId = searchParams.get('provinceId');
     const districtId = searchParams.get('districtId');
 
     const where: Prisma.OrganizationWhereInput = { is_active: true };
-    if (type) where.type = type as Prisma.EnumLocationTypeFilter<"Organization">;
+    if (locationTypeId) where.location_type_id = locationTypeId;
     if (provinceId) where.province_id = provinceId;
     if (districtId) where.district_id = districtId;
 
     const organizations = await prisma.organization.findMany({
       where,
       include: {
+        location_type: true,
         province: true,
         district: true,
         commune: true,
@@ -81,7 +82,7 @@ export async function POST(request: NextRequest) {
       name_kh, 
       code, 
       description, 
-      type, 
+      location_type_id, 
       province_id, 
       district_id, 
       commune_id, 
@@ -89,9 +90,9 @@ export async function POST(request: NextRequest) {
     } = body;
 
     // Validate required fields
-    if (!name_en || !name_kh || !code || !type || !province_id || !district_id) {
+    if (!name_en || !name_kh || !code || !location_type_id || !province_id || !district_id) {
       return NextResponse.json(
-        { error: 'Required fields: name_en, name_kh, code, type, province_id, district_id' },
+        { error: 'Required fields: name_en, name_kh, code, location_type_id, province_id, district_id' },
         { status: 400 }
       );
     }
@@ -141,7 +142,7 @@ export async function POST(request: NextRequest) {
         code,
         is_active: true,
         description,
-        type,
+        location_type_id,
         province_id,
         district_id,
         commune_id,
@@ -150,6 +151,7 @@ export async function POST(request: NextRequest) {
         updated_by: permissionCheck.user.id
       },
       include: {
+        location_type: true,
         province: true,
         district: true,
         commune: true,
@@ -164,7 +166,7 @@ export async function POST(request: NextRequest) {
       action: 'ORGANIZATION_CREATE',
       entityId: organization.id,
       entityType: 'ORGANIZATION',
-      details: JSON.stringify({ name_en, code, type }),
+      details: JSON.stringify({ name_en, code, location_type_id }),
       success: true,
       ipAddress: ip,
       userAgent
@@ -192,7 +194,7 @@ export async function PUT(request: NextRequest) {
       name_kh, 
       code, 
       description, 
-      type, 
+      location_type_id, 
       province_id, 
       district_id, 
       commune_id, 
@@ -211,6 +213,7 @@ export async function PUT(request: NextRequest) {
     const currentOrg = await prisma.organization.findUnique({
       where: { id },
       include: {
+        location_type: true,
         province: true,
         district: true,
         commune: true,
@@ -272,7 +275,7 @@ export async function PUT(request: NextRequest) {
         name_kh,
         code,
         description,
-        type,
+        location_type_id,
         province_id,
         district_id,
         commune_id,
@@ -281,6 +284,7 @@ export async function PUT(request: NextRequest) {
         updated_by: permissionCheck.user.id
       },
       include: {
+        location_type: true,
         province: true,
         district: true,
         commune: true,
@@ -298,12 +302,12 @@ export async function PUT(request: NextRequest) {
       details: JSON.stringify({
         name_en,
         code,
-        type,
+        location_type_id,
         is_active,
         changes: {
           name: name_en !== currentOrg.name_en,
           code: code !== currentOrg.code,
-          type: type !== currentOrg.type,
+          location_type_id: location_type_id !== currentOrg.location_type_id,
           location: province_id !== currentOrg.province_id || 
                    district_id !== currentOrg.district_id ||
                    commune_id !== currentOrg.commune_id ||
@@ -344,6 +348,7 @@ export async function DELETE(request: NextRequest) {
     const organization = await prisma.organization.findUnique({
       where: { id },
       include: {
+        location_type: true,
         province: true,
         district: true,
         commune: true,
@@ -391,7 +396,7 @@ export async function DELETE(request: NextRequest) {
       details: JSON.stringify({
         name_en: organization.name_en,
         code: organization.code,
-        type: organization.type,
+        location_type_id: organization.location_type_id,
         location: {
           province: organization.province?.name_en,
           district: organization.district?.name_en,
